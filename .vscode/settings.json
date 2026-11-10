@@ -1,0 +1,12 @@
+{
+    "github.copilot.enable": {
+        "*": false
+    },
+    "github.copilot.nextEditSuggestions.enabled":false,
+    "workbench.settings.showAISearchToggle":false,
+    "github.copilot.editor.enableCodeActions" : false,
+    "github.copilot.renameSuggestions.triggerAutomatically":false,
+    "chat.autopilot.enabled":false,
+    "github.copilot.chat.newWorkspaceCreation.enabled": false,
+    "chat.agentsControl.enabled": "hidden"
+}
