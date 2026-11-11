@@ -63,6 +63,9 @@ extern OBJ_ATTR shadowOAM[128];
 // Sprite Functions
 void hideSprites();
 
+// Direction Enumerator
+typedef enum {NONE, LEFT, RIGHT, UP, DOWN} Direction;
+
 // Generic struct for animated sprite
 typedef struct {
   int x;
@@ -72,11 +75,14 @@ typedef struct {
   int width;
   int height;
   int timeUntilNextFrame;
-  int direction;
+  Direction direction;
   int isAnimating;
   int currentFrame;
   int numFrames;
   u8 oamIndex; 
 } Sprite;
+
+// Sprite Objects
+extern Sprite player;
 
 #endif

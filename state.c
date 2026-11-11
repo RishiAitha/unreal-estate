@@ -27,6 +27,9 @@ State current_state = {START, 0, initStart, doStart};
 // Pause Management
 int fromPause = 0;
 
+// Sprites
+Sprite player;
+
 void driveStates(void) {
     if (!current_state.initialized && current_state.initState) {
         current_state.initState();
@@ -86,7 +89,18 @@ void initGame(void) {
         DMANow(3, gameBGTiles, CHARBLOCK + 2, gameBGTilesLen / 2);
         DMANow(3, gameBGMap, SCREENBLOCK, gameBGMapLen / 2);
 
-        
+        player.x = 4;
+        player.y = 64;
+        player.xVel = 1;
+        player.yVel = 1;
+        player.width = 16;
+        player.height = 16;
+        player.timeUntilNextFrame = 10;
+        player.direction = NONE;
+        player.isAnimating = 0;
+        player.currentFrame = 0;
+        player.numFrames = 3;
+        player.oamIndex = 1;
     }
 }
 
@@ -95,6 +109,13 @@ void doGame(void) {
         current_state.initialized = 0;
         current_state = game_states[3];
     }
+
+    updatePlayer();
+    drawPlayer();
+
+    waitForVBlank();
+
+    DMANow(3, shadowOAM, OAM, 128 * 4);
 }
 
 void initPause(void) {
@@ -112,6 +133,8 @@ void doPause(void) {
 
         current_state = game_states[2];
     }
+
+    waitForVBlank();
 
     DMANow(3, shadowOAM, OAM, 128 * 4);
 }

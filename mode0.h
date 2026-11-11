@@ -46,5 +46,7 @@ typedef struct {
 #define TILEMAP_ENTRY_VFLIP (1 << 11)
 #define TILEMAP_ENTRY_PALROW(x) ((x & 15) << 12)
 
+// Collision Map Function
+u8 colorAt(int x, int y, void *map, int map_width)
 
 #endif

@@ -17,6 +17,8 @@
 #ifndef GRIT_GAMECOLLISIONMAP_H
 #define GRIT_GAMECOLLISIONMAP_H
 
+#define gameCollisionMapWidth 256
+
 #define gameCollisionMapBitmapLen 32768
 extern const unsigned short gameCollisionMapBitmap[16384];
 
