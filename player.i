@@ -104,7 +104,7 @@ extern Sprite player;
 # 4 "player.c" 2
 # 1 "gameCollisionMap.h" 1
 # 23 "gameCollisionMap.h"
-extern const unsigned short gameCollisionMapBitmap[16384];
+extern const unsigned short gameCollisionMapBitmap[32768];
 
 
 extern const unsigned short gameCollisionMapPal[256];
@@ -1106,48 +1106,47 @@ void updatePlayer(void) {
     player.direction = NONE;
 
     int leftX = player.x + 2;
-    int rightX = player.x + player.width - 2;
+    int rightX = player.x + player.width - 2 - 1;
     int upY = player.y + 2;
-    int downY = player.y + player.height - 2;
+    int downY = player.y + player.height - 2 - 1;
     u8 *collisionMap = (u8*) gameCollisionMapBitmap;
-
-    char str[10];
-    sprintf(str, "%d", colorAt(26, 0, collisionMap, 256));
-    mgba_printf(str);
 
     if ((~(buttons) & ((1<<6)))) {
         player.direction = UP;
         player.isAnimating = 1;
-        if (player.y > 0
-            && colorAt(leftX, upY - player.yVel, collisionMap, 256)
-            && colorAt(rightX, upY - player.yVel, collisionMap, 32768)) {
+        if ((player.y > 0)
+            && (colorAt(leftX, upY - player.yVel, collisionMap, 256) != 0)
+            && (colorAt(rightX, upY - player.yVel, collisionMap, 65536) != 0)) {
             player.y -= player.yVel;
         }
     }
     if ((~(buttons) & ((1<<7)))) {
         player.direction = DOWN;
         player.isAnimating = 1;
-        if (player.y + player.height < 160
-            && colorAt(leftX, downY + player.yVel, collisionMap, 256)
-            && colorAt(rightX, downY + player.yVel, collisionMap, 32768)) {
+
+
+
+        if ((player.y + player.height < 160)
+            && (colorAt(leftX, downY + player.yVel, collisionMap, 256) != 0)
+            && (colorAt(rightX, downY + player.yVel, collisionMap, 256) != 0)) {
             player.y += player.yVel;
         }
     }
     if ((~(buttons) & ((1<<5)))) {
         player.direction = LEFT;
         player.isAnimating = 1;
-        if (player.x > 0
-            && colorAt(leftX - player.xVel, upY, collisionMap, 256)
-            && colorAt(leftX - player.xVel, downY, collisionMap, 32768)) {
+        if ((player.x > 0)
+            && (colorAt(leftX - player.xVel, upY, collisionMap, 256) != 0)
+            && (colorAt(leftX - player.xVel, downY, collisionMap, 65536) != 0)) {
             player.x -= player.xVel;
         }
     }
     if ((~(buttons) & ((1<<4)))) {
         player.direction = RIGHT;
         player.isAnimating = 1;
-        if (player.x + player.width < 240
-            && colorAt(rightX + player.xVel, upY, collisionMap, 256)
-            && colorAt(rightX + player.xVel, downY, collisionMap, 32768)) {
+        if ((player.x + player.width < 240)
+            && (colorAt(rightX + player.xVel, upY, collisionMap, 256) != 0)
+            && (colorAt(rightX + player.xVel, downY, collisionMap, 65536) != 0)) {
             player.x += player.xVel;
         }
     }

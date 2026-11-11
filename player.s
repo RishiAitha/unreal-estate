@@ -12,11 +12,6 @@
 	.eabi_attribute 18, 4
 	.file	"player.c"
 	.text
-	.section	.rodata.str1.4,"aMS",%progbits,1
-	.align	2
-.LC0:
-	.ascii	"%d\000"
-	.text
 	.align	2
 	.global	updatePlayer
 	.syntax unified
@@ -24,50 +19,34 @@
 	.type	updatePlayer, %function
 updatePlayer:
 	@ Function supports interworking.
-	@ args = 0, pretend = 0, frame = 16
+	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 0, uses_anonymous_args = 0
-	mov	r1, #0
+	mov	r0, #0
 	push	{r4, r5, r6, r7, r8, r9, r10, lr}
 	ldr	r4, .L45
-	ldr	r0, [r4]
+	ldr	r1, [r4]
 	ldr	r3, [r4, #16]
-	add	r3, r0, r3
-	ldr	r2, [r4, #4]
-	sub	r9, r3, #2
-	ldr	r3, [r4, #20]
-	add	r3, r2, r3
-	sub	sp, sp, #16
 	ldr	r5, .L45+4
-	add	r7, r0, #2
-	add	r8, r2, #2
-	mov	r0, #26
-	ldr	r2, .L45+8
-	sub	r10, r3, #2
-	mov	r3, #256
-	str	r1, [r4, #32]
-	strb	r1, [r4, #28]
-	mov	lr, pc
-	bx	r5
-	ldr	r6, .L45+12
-	mov	r2, r0
-	ldr	r1, .L45+16
-	ldr	r3, .L45+20
-	add	r0, sp, #4
-	mov	lr, pc
-	bx	r3
-	ldr	r3, .L45+24
-	add	r0, sp, #4
-	mov	lr, pc
-	bx	r3
-	ldrh	r3, [r6]
+	add	r3, r1, r3
+	ldr	r2, [r4, #4]
+	add	ip, r1, #2
+	sub	r8, r3, #3
+	ldr	r1, [r4, #20]
+	ldrh	r3, [r5]
+	str	r0, [r4, #32]
+	strb	r0, [r4, #28]
+	add	r1, r2, r1
+	add	r0, r2, #2
 	tst	r3, #64
+	mov	r6, ip
+	mov	r7, r0
+	sub	r9, r1, #3
 	bne	.L4
+	cmp	r2, #0
 	mov	r2, #3
 	strb	r2, [r4, #28]
 	mov	r2, #1
 	str	r2, [r4, #32]
-	ldr	r2, [r4, #4]
-	cmp	r2, #0
 	bgt	.L42
 .L4:
 	tst	r3, #128
@@ -99,28 +78,27 @@ updatePlayer:
 	bne	.L1
 	mov	r2, #10
 	ldr	r0, [r4, #36]
-	ldr	r3, .L45+28
 	ldr	r1, [r4, #40]
 	str	r2, [r4, #24]
+	ldr	r3, .L45+8
 	add	r0, r0, #1
 	mov	lr, pc
 	bx	r3
 	str	r1, [r4, #36]
-	add	sp, sp, #16
-	@ sp needed
 	pop	{r4, r5, r6, r7, r8, r9, r10, lr}
 	bx	lr
 .L44:
 	ldr	r0, [r4, #8]
 	mov	r3, #256
-	mov	r1, r8
-	ldr	r2, .L45+8
-	sub	r0, r7, r0
+	mov	r1, r7
+	ldr	r2, .L45+12
+	ldr	ip, .L45+16
+	sub	r0, r6, r0
 	mov	lr, pc
-	bx	r5
+	bx	ip
 	cmp	r0, #0
 	bne	.L14
-	ldrh	r3, [r6]
+	ldrh	r3, [r5]
 .L12:
 	tst	r3, #16
 	bne	.L17
@@ -135,19 +113,20 @@ updatePlayer:
 	cmp	r2, #239
 	bgt	.L22
 	ldr	r0, [r4, #8]
-	mov	r1, r8
+	mov	r1, r7
 	mov	r3, #256
-	ldr	r2, .L45+8
-	add	r0, r9, r0
+	ldr	r2, .L45+12
+	ldr	r5, .L45+16
+	add	r0, r8, r0
 	mov	lr, pc
 	bx	r5
 	cmp	r0, #0
 	beq	.L17
 	ldr	r0, [r4, #8]
-	mov	r3, #32768
-	ldr	r2, .L45+8
-	mov	r1, r10
-	add	r0, r9, r0
+	mov	r3, #65536
+	ldr	r2, .L45+12
+	mov	r1, r9
+	add	r0, r8, r0
 	mov	lr, pc
 	bx	r5
 	cmp	r0, #0
@@ -161,59 +140,61 @@ updatePlayer:
 	streq	r3, [r4, #36]
 	bne	.L22
 .L1:
-	add	sp, sp, #16
-	@ sp needed
 	pop	{r4, r5, r6, r7, r8, r9, r10, lr}
 	bx	lr
 .L42:
 	ldr	r1, [r4, #12]
 	mov	r3, #256
-	mov	r0, r7
-	ldr	r2, .L45+8
-	sub	r1, r8, r1
+	sub	r1, r0, r1
+	ldr	r2, .L45+12
+	mov	r0, ip
+	ldr	ip, .L45+16
 	mov	lr, pc
-	bx	r5
+	bx	ip
 	cmp	r0, #0
 	bne	.L5
 .L39:
-	ldrh	r3, [r6]
+	ldrh	r3, [r5]
 	b	.L4
 .L43:
 	ldr	r1, [r4, #12]
 	mov	r3, #256
-	mov	r0, r7
-	ldr	r2, .L45+8
-	add	r1, r10, r1
+	mov	r0, r6
+	ldr	r2, .L45+12
+	ldr	ip, .L45+16
+	add	r1, r9, r1
 	mov	lr, pc
-	bx	r5
+	bx	ip
 	cmp	r0, #0
 	bne	.L10
 .L40:
-	ldrh	r3, [r6]
+	ldrh	r3, [r5]
 	b	.L9
 .L14:
 	ldr	r0, [r4, #8]
-	ldr	r2, .L45+8
-	mov	r1, r10
-	mov	r3, #32768
-	sub	r0, r7, r0
+	ldr	r2, .L45+12
+	mov	r1, r9
+	mov	r3, #65536
+	ldr	ip, .L45+16
+	sub	r0, r6, r0
 	mov	lr, pc
-	bx	r5
+	bx	ip
 	cmp	r0, #0
 	ldrne	r2, [r4]
 	ldrne	r1, [r4, #8]
 	subne	r2, r2, r1
-	ldrh	r3, [r6]
+	ldrh	r3, [r5]
 	strne	r2, [r4]
 	b	.L12
 .L5:
 	ldr	r1, [r4, #12]
-	mov	r3, #32768
-	ldr	r2, .L45+8
-	mov	r0, r9
-	sub	r1, r8, r1
+	mov	r3, #65536
+	ldr	r2, .L45+12
+	mov	r0, r8
+	ldr	ip, .L45+16
+	sub	r1, r7, r1
 	mov	lr, pc
-	bx	r5
+	bx	ip
 	cmp	r0, #0
 	ldrne	r3, [r4, #4]
 	ldrne	r2, [r4, #12]
@@ -222,12 +203,13 @@ updatePlayer:
 	b	.L39
 .L10:
 	ldr	r1, [r4, #12]
-	mov	r3, #32768
-	ldr	r2, .L45+8
-	mov	r0, r9
-	add	r1, r10, r1
+	mov	r3, #256
+	ldr	r2, .L45+12
+	mov	r0, r8
+	ldr	ip, .L45+16
+	add	r1, r9, r1
 	mov	lr, pc
-	bx	r5
+	bx	ip
 	cmp	r0, #0
 	ldrne	r3, [r4, #4]
 	ldrne	r2, [r4, #12]
@@ -238,13 +220,10 @@ updatePlayer:
 	.align	2
 .L45:
 	.word	player
-	.word	colorAt
-	.word	gameCollisionMapBitmap
 	.word	buttons
-	.word	.LC0
-	.word	sprintf
-	.word	mgba_printf
 	.word	__aeabi_idivmod
+	.word	gameCollisionMapBitmap
+	.word	colorAt
 	.size	updatePlayer, .-updatePlayer
 	.align	2
 	.global	drawPlayer

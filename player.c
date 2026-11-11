@@ -11,48 +11,44 @@ void updatePlayer(void) {
     player.direction = NONE;
 
     int leftX = player.x + PLAYER_LMARGIN;
-    int rightX = player.x + player.width - PLAYER_RMARGIN;
+    int rightX = player.x + player.width - PLAYER_RMARGIN - 1;
     int upY = player.y + PLAYER_UMARGIN;
-    int downY = player.y + player.height - PLAYER_DMARGIN;
+    int downY = player.y + player.height - PLAYER_DMARGIN - 1;
     u8 *collisionMap = (u8*) gameCollisionMapBitmap;
-
-    char str[10];
-    sprintf(str, "%d", colorAt(26, 0, collisionMap, gameCollisionMapWidth));
-    mgba_printf(str);
 
     if (BUTTON_HELD(BUTTON_UP)) {
         player.direction = UP;
         player.isAnimating = 1;
-        if (player.y > 0
-            && colorAt(leftX, upY - player.yVel, collisionMap, gameCollisionMapWidth)
-            && colorAt(rightX, upY - player.yVel, collisionMap, gameCollisionMapBitmapLen)) {
+        if ((player.y > 0)
+            && (colorAt(leftX, upY - player.yVel, collisionMap, gameCollisionMapWidth) != 0)
+            && (colorAt(rightX, upY - player.yVel, collisionMap, gameCollisionMapBitmapLen) != 0)) {
             player.y -= player.yVel;
         }
     }
     if (BUTTON_HELD(BUTTON_DOWN)) {
         player.direction = DOWN;
         player.isAnimating = 1;
-        if (player.y + player.height < SCREENHEIGHT
-            && colorAt(leftX, downY + player.yVel, collisionMap, gameCollisionMapWidth)
-            && colorAt(rightX, downY + player.yVel, collisionMap, gameCollisionMapBitmapLen)) {
+        if ((player.y + player.height < SCREENHEIGHT)
+            && (colorAt(leftX, downY + player.yVel, collisionMap, gameCollisionMapWidth) != 0)
+            && (colorAt(rightX, downY + player.yVel, collisionMap, gameCollisionMapWidth) != 0)) {
             player.y += player.yVel;
         }
     }
     if (BUTTON_HELD(BUTTON_LEFT)) {
         player.direction = LEFT;
         player.isAnimating = 1;
-        if (player.x > 0
-            && colorAt(leftX - player.xVel, upY, collisionMap, gameCollisionMapWidth)
-            && colorAt(leftX - player.xVel, downY, collisionMap, gameCollisionMapBitmapLen)) {
+        if ((player.x > 0)
+            && (colorAt(leftX - player.xVel, upY, collisionMap, gameCollisionMapWidth) != 0)
+            && (colorAt(leftX - player.xVel, downY, collisionMap, gameCollisionMapBitmapLen) != 0)) {
             player.x -= player.xVel;
         }
     }
     if (BUTTON_HELD(BUTTON_RIGHT)) {
         player.direction = RIGHT;
         player.isAnimating = 1;
-        if (player.x + player.width < SCREENWIDTH
-            && colorAt(rightX + player.xVel, upY, collisionMap, gameCollisionMapWidth)
-            && colorAt(rightX + player.xVel, downY, collisionMap, gameCollisionMapBitmapLen)) {
+        if ((player.x + player.width < SCREENWIDTH)
+            && (colorAt(rightX + player.xVel, upY, collisionMap, gameCollisionMapWidth) != 0)
+            && (colorAt(rightX + player.xVel, downY, collisionMap, gameCollisionMapBitmapLen) != 0)) {
             player.x += player.xVel;
         }
     }
