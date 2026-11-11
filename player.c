@@ -3,6 +3,9 @@
 #include "sprites.h"
 #include "gameCollisionMap.h"
 
+#include "print.h"
+#include <stdio.h>
+
 void updatePlayer(void) {
     player.isAnimating = 0;
     player.direction = NONE;
@@ -12,6 +15,10 @@ void updatePlayer(void) {
     int upY = player.y + PLAYER_UMARGIN;
     int downY = player.y + player.height - PLAYER_DMARGIN;
     u8 *collisionMap = (u8*) gameCollisionMapBitmap;
+
+    char str[10];
+    sprintf(str, "%d", colorAt(26, 0, collisionMap, gameCollisionMapWidth));
+    mgba_printf(str);
 
     if (BUTTON_HELD(BUTTON_UP)) {
         player.direction = UP;

@@ -7,8 +7,11 @@
 #include "instructionsBG.h"
 #include "gameBG.h"
 #include "winBG.h"
+#include "collisionBG.h"
 
 #include "spritesheet.h"
+
+#include "player.h"
 
 #define PAUSE_OAMINDEX 0
 
@@ -85,12 +88,16 @@ void doInstructions(void) {
 
 void initGame(void) {
     if (!fromPause) {
-        DMANow(3, gameBGPal, BG_PALETTE, gameBGPalLen / 2);
-        DMANow(3, gameBGTiles, CHARBLOCK + 2, gameBGTilesLen / 2);
-        DMANow(3, gameBGMap, SCREENBLOCK, gameBGMapLen / 2);
+        // DMANow(3, gameBGPal, BG_PALETTE, gameBGPalLen / 2);
+        // DMANow(3, gameBGTiles, CHARBLOCK + 2, gameBGTilesLen / 2);
+        // DMANow(3, gameBGMap, SCREENBLOCK, gameBGMapLen / 2);
 
-        player.x = 4;
-        player.y = 64;
+        DMANow(3, collisionBGPal, BG_PALETTE, collisionBGPalLen / 2);
+        DMANow(3, collisionBGTiles, CHARBLOCK + 2, collisionBGTilesLen / 2);
+        DMANow(3, collisionBGMap, SCREENBLOCK, collisionBGMapLen / 2);
+
+        player.x = 0;
+        player.y = 0;
         player.xVel = 1;
         player.yVel = 1;
         player.width = 16;
