@@ -43,3 +43,11 @@ shadowOAM[0].attr1 = ATTR1_TINY | ATTR1_X(0);
 shadowOAM[0].attr2 = ATTR2_TILEID(0, 0);
 
 DMANow(3, shadowOAM, OAM, 128 * 4);
+
+
+Printing Integers:
+#include <stdio.h>
+
+char str[10];
+sprintf(str, "%d", num);
+mgba_printf(str);
