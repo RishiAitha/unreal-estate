@@ -1,88 +1,119 @@
 #include "state.h"
-#include "houseTilesTest.h"
-#include "startBG.h"
 #include "mode0.h"
 #include "sprites.h"
-#include "generatedHouses.h"
 #include "print.h"
-#include <stdio.h>
+
+#include "startBG.h"
+#include "instructionsBG.h"
+#include "gameBG.h"
+#include "winBG.h"
+
+#include "spritesheet.h"
+
+#define PAUSE_OAMINDEX 0
+
+// State Management
+State game_states[] = {
+    {START, 0, initStart, doStart},
+    {INSTRUCTIONS, 0, initInstructions, doInstructions},
+    {GAME, 0, initGame, doGame},
+    {PAUSE, 0, initPause, doPause},
+    {MENU, 0, initMenu, doMenu},
+    {WIN, 0, initWin, doWin},
+};
+
+State current_state = {START, 0, initStart, doStart};
+
+// Pause Management
+int fromPause = 0;
+
+void driveStates(void) {
+    if (!current_state.initialized && current_state.initState) {
+        current_state.initState();
+        current_state.initialized = 1;
+    }
+    current_state.doState();
+}
 
 void initStart(void) {
     DMANow(3, startBGPal, BG_PALETTE, startBGPalLen / 2);
     DMANow(3, startBGTiles, CHARBLOCK + 2, startBGTilesLen / 2);
     DMANow(3, startBGMap, SCREENBLOCK, startBGMapLen / 2);
-
-    DMANow(3, houseTilesTestPal, SPRITE_PAL, houseTilesTestPalLen / 2);
-
-    // Writing my thoughts: 11/11/2026
-
-    // Trying to combine two tiles
-    // Basically want to pre-compute all the house arrangements in advance
-    // This may have the issue of running out of RAM or something
-    // And I need to manage the space on the spritesheet (can I have one per level?)
-    // for (int i = 0; i < 16; i++) {
-    //     // Get the chunk of four pixels (short)
-    //     unsigned short old = houseTilesTestTiles[i];
-    //     unsigned short new = houseTilesTestTiles[i + OFFSET(0, 8, 256)];
-    //     unsigned short newShort = 0;
-    //     // Go through each pixel
-    //     for (int j = 0; j < 4; j++) {
-    //         // Get pixel palette number
-    //         int oldPixel = old % 0x10;
-    //         old /= 0x10;
-    //         int newPixel = new % 0x10;
-    //         new /= 0x10;
-    //         newShort |= (newPixel == 0 ? oldPixel : newPixel) << (j * 4);
-    //     }
-    //     generatedHousesTiles[i] = newShort;
-    // }
-
-    // Alternatively: just don't have scrolling camera (which makes more sense gameplay-wise, but is less artsy)
-    // And have like 20 houses which would take 80-100 sprites at most!
-    // Probably the better solution but less cool and funky
-    // And not sure if I should have any scrolling background (for requirements and complexity)
-    // It doesn't make as much sense though because then you spend time just running around looking for the house that's offscreen
-    // Rather than identifying it from the set of buildings
-    // Realistically this is the better option but i'm stubborn
-
-    DMANow(3, generatedHousesTiles, CHARBLOCK + 4, generatedHousesTilesLen / 2);
-    //DMANow(3, houseTilesTestTiles, CHARBLOCK + 4, houseTilesTestTilesLen / 2);
+    
+    DMANow(3, spritesheetPal, SPRITE_PAL, spritesheetPalLen / 2);
+    DMANow(3, spritesheetTiles, CHARBLOCK + 4, spritesheetTilesLen / 2);
     
     hideSprites();
-
-    shadowOAM[0].attr0 = ATTR0_4BPP | ATTR0_SQUARE | ATTR0_Y(0);
-    shadowOAM[0].attr1 = ATTR1_TINY | ATTR1_X(0);
-    shadowOAM[0].attr2 = ATTR2_TILEID(0, 0);
 
     DMANow(3, shadowOAM, OAM, 128 * 4);
 }
 
 void doStart(void) {
-    
+    if (BUTTON_PRESSED(BUTTON_START)) {
+        current_state.initialized = 0;
+        fromPause = 0;
+        current_state = game_states[2];
+    }
+
+    if (BUTTON_PRESSED(BUTTON_SELECT)) {
+        current_state.initialized = 0;
+        current_state = game_states[1];
+    }
 }
 
 void initInstructions(void) {
-    
+    DMANow(3, instructionsBGPal, BG_PALETTE, instructionsBGPalLen / 2);
+    DMANow(3, instructionsBGTiles, CHARBLOCK + 2, instructionsBGTilesLen / 2);
+    DMANow(3, instructionsBGMap, SCREENBLOCK, instructionsBGMapLen / 2);
 }
 
 void doInstructions(void) {
+    if (BUTTON_PRESSED(BUTTON_START)) {
+        current_state.initialized = 0;
+        fromPause = 0;
+        current_state = game_states[2];
+    }
 
+    if (BUTTON_PRESSED(BUTTON_SELECT)) {
+        current_state.initialized = 0;
+        current_state = game_states[0];
+    }
 }
 
 void initGame(void) {
-    
+    if (!fromPause) {
+        DMANow(3, gameBGPal, BG_PALETTE, gameBGPalLen / 2);
+        DMANow(3, gameBGTiles, CHARBLOCK + 2, gameBGTilesLen / 2);
+        DMANow(3, gameBGMap, SCREENBLOCK, gameBGMapLen / 2);
+
+        
+    }
 }
 
 void doGame(void) {
-
+    if (BUTTON_PRESSED(BUTTON_SELECT)) {
+        current_state.initialized = 0;
+        current_state = game_states[3];
+    }
 }
 
 void initPause(void) {
-    
+    shadowOAM[PAUSE_OAMINDEX].attr0 = ATTR0_4BPP | ATTR0_WIDE | ATTR0_Y((SCREENHEIGHT / 2) - 16);
+    shadowOAM[PAUSE_OAMINDEX].attr1 = ATTR1_LARGE | ATTR1_X((SCREENWIDTH / 2) - 32);
+    shadowOAM[PAUSE_OAMINDEX].attr2 = ATTR2_TILEID(24, 0);
 }
 
 void doPause(void) {
+    if (BUTTON_PRESSED(BUTTON_SELECT)) {
+        current_state.initialized = 0;
+        fromPause = 1;
 
+        shadowOAM[PAUSE_OAMINDEX].attr0 = ATTR0_HIDE;
+
+        current_state = game_states[2];
+    }
+
+    DMANow(3, shadowOAM, OAM, 128 * 4);
 }
 
 void initMenu(void) {
@@ -94,9 +125,14 @@ void doMenu(void) {
 }
 
 void initWin(void) {
-
+    DMANow(3, winBGPal, BG_PALETTE, winBGPalLen / 2);
+    DMANow(3, winBGTiles, CHARBLOCK + 2, winBGTilesLen / 2);
+    DMANow(3, winBGMap, SCREENBLOCK, winBGMapLen / 2);
 }
 
 void doWin(void) {
-
+    if (BUTTON_PRESSED(BUTTON_START)) {
+        current_state.initialized = 0;
+        current_state = game_states[0];
+    }
 }

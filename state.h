@@ -24,6 +24,7 @@ void initMenu(void);
 void doMenu(void);
 void initWin(void);
 void doWin(void);
+void driveStates(void);
 
 extern State game_states[6];
 extern State current_state;

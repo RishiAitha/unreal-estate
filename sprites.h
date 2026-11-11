@@ -77,6 +77,6 @@ typedef struct {
   int currentFrame;
   int numFrames;
   u8 oamIndex; 
-} SPRITE;
+} Sprite;
 
 #endif
