@@ -67,5 +67,5 @@ void updatePlayer(void) {
 void drawPlayer(void) {
     shadowOAM[PLAYER_OAMINDEX].attr0 = ATTR0_4BPP | ATTR0_SQUARE | ATTR0_Y(player.y);
     shadowOAM[PLAYER_OAMINDEX].attr1 = ATTR1_SMALL | ATTR1_X(player.x);
-    shadowOAM[PLAYER_OAMINDEX].attr2 = ATTR2_TILEID(player.direction * 2, player.currentFrame * 2);
+    shadowOAM[PLAYER_OAMINDEX].attr2 = ATTR2_TILEID(player.direction * 2, player.currentFrame * 2) | ATTR2_PRIORITY(100);
 }

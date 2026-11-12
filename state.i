@@ -126,8 +126,14 @@ typedef struct {
   u8 oamIndex;
 } Sprite;
 
+typedef struct {
+  Sprite components[4];
+  int choices[4];
+} House;
+
 
 extern Sprite player;
+extern House houses[20];
 # 4 "state.c" 2
 # 1 "print.h" 1
 # 25 "print.h"
@@ -390,6 +396,13 @@ extern const unsigned short collisionBGMap[1024];
 
 extern const unsigned short collisionBGPal[256];
 # 11 "state.c" 2
+# 1 "gameCollisionMap.h" 1
+# 23 "gameCollisionMap.h"
+extern const unsigned short gameCollisionMapBitmap[32768];
+
+
+extern const unsigned short gameCollisionMapPal[256];
+# 12 "state.c" 2
 
 # 1 "spritesheet.h" 1
 # 21 "spritesheet.h"
@@ -397,13 +410,19 @@ extern const unsigned short spritesheetTiles[16384];
 
 
 extern const unsigned short spritesheetPal[256];
-# 13 "state.c" 2
+# 14 "state.c" 2
 
 # 1 "player.h" 1
 # 10 "player.h"
 void updatePlayer(void);
 void drawPlayer(void);
-# 15 "state.c" 2
+# 16 "state.c" 2
+# 1 "houses.h" 1
+# 10 "houses.h"
+void initializeHouses(void);
+
+void drawHouses(void);
+# 17 "state.c" 2
 
 
 
@@ -424,6 +443,7 @@ int fromPause = 0;
 
 
 Sprite player;
+House houses[20];
 
 void driveStates(void) {
     if (!current_state.initialized && current_state.initState) {
@@ -500,6 +520,8 @@ void initGame(void) {
         player.currentFrame = 0;
         player.numFrames = 3;
         player.oamIndex = 1;
+
+        initializeHouses();
     }
 }
 
@@ -510,7 +532,17 @@ void doGame(void) {
     }
 
     updatePlayer();
+
+    if ((!(~(oldButtons) & ((1<<0))) && (~(buttons) & ((1<<0))))) {
+        if (colorAt(player.x + (player.width / 2), player.y, (u8*) gameCollisionMapBitmap, 256) == 2) {
+            current_state.initialized = 0;
+            current_state = game_states[5];
+            return;
+        }
+    }
+
     drawPlayer();
+    drawHouses();
 
     waitForVBlank();
 
@@ -547,9 +579,14 @@ void doMenu(void) {
 }
 
 void initWin(void) {
+    hideSprites();
     DMANow(3, winBGPal, ((unsigned short *)0x5000000), 512 / 2);
     DMANow(3, winBGTiles, ((CB*) 0x6000000) + 2, 544 / 2);
     DMANow(3, winBGMap, ((SB*) 0x6000000), 2048 / 2);
+
+    waitForVBlank();
+
+    DMANow(3, shadowOAM, ((OBJ_ATTR*)(0x7000000)), 128 * 4);
 }
 
 void doWin(void) {

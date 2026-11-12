@@ -8,10 +8,12 @@
 #include "gameBG.h"
 #include "winBG.h"
 #include "collisionBG.h"
+#include "gameCollisionMap.h"
 
 #include "spritesheet.h"
 
 #include "player.h"
+#include "houses.h"
 
 #define PAUSE_OAMINDEX 0
 
@@ -32,6 +34,7 @@ int fromPause = 0;
 
 // Sprites
 Sprite player;
+House houses[20];
 
 void driveStates(void) {
     if (!current_state.initialized && current_state.initState) {
@@ -108,6 +111,8 @@ void initGame(void) {
         player.currentFrame = 0;
         player.numFrames = 3;
         player.oamIndex = 1;
+
+        initializeHouses();
     }
 }
 
@@ -118,7 +123,17 @@ void doGame(void) {
     }
 
     updatePlayer();
+
+    if (BUTTON_PRESSED(BUTTON_A)) {
+        if (colorAt(player.x + (player.width / 2), player.y, (u8*) gameCollisionMapBitmap, gameCollisionMapWidth) == 2) {
+            current_state.initialized = 0;
+            current_state = game_states[5];
+            return;
+        }
+    }
+
     drawPlayer();
+    drawHouses();
 
     waitForVBlank();
 
@@ -155,9 +170,14 @@ void doMenu(void) {
 }
 
 void initWin(void) {
+    hideSprites();
     DMANow(3, winBGPal, BG_PALETTE, winBGPalLen / 2);
     DMANow(3, winBGTiles, CHARBLOCK + 2, winBGTilesLen / 2);
     DMANow(3, winBGMap, SCREENBLOCK, winBGMapLen / 2);
+
+    waitForVBlank();
+
+    DMANow(3, shadowOAM, OAM, 128 * 4);
 }
 
 void doWin(void) {

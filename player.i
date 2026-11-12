@@ -99,8 +99,14 @@ typedef struct {
   u8 oamIndex;
 } Sprite;
 
+typedef struct {
+  Sprite components[4];
+  int choices[4];
+} House;
+
 
 extern Sprite player;
+extern House houses[20];
 # 4 "player.c" 2
 # 1 "gameCollisionMap.h" 1
 # 23 "gameCollisionMap.h"
@@ -1162,5 +1168,5 @@ void updatePlayer(void) {
 void drawPlayer(void) {
     shadowOAM[1].attr0 = (0<<13) | (0<<14) | ((player.y) & 0xFF);
     shadowOAM[1].attr1 = (1<<14) | ((player.x) & 0x1FF);
-    shadowOAM[1].attr2 = ((((player.currentFrame * 2) * (32) + (player.direction * 2))) & 0x3FF);
+    shadowOAM[1].attr2 = ((((player.currentFrame * 2) * (32) + (player.direction * 2))) & 0x3FF) | (((100) & 3) << 10);
 }
