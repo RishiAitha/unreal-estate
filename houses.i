@@ -1287,6 +1287,7 @@ void initializeHouses(void) {
 void drawHouses(void) {
     for (int i = 0; i < 20; i++) {
         for (int j = 0; j < 4; j++) {
+
             Sprite component = houses[i].components[j];
             shadowOAM[component.oamIndex].attr0 = (0<<13) | (0<<14) | ((component.y) & 0xFF);
             shadowOAM[component.oamIndex].attr1 = (2<<14) | ((component.x) & 0x1FF);
