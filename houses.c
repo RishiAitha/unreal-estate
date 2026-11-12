@@ -20,7 +20,7 @@ void initializeHouses(void) {
 
             houses[i].components[j] = component;
 
-            // TODO: handle duplication!
+            // TODO: handle duplication and correct option selection!
             houses[i].choices[j] = rand() % 3;
         }
     }
@@ -29,6 +29,7 @@ void initializeHouses(void) {
 void drawHouses(void) {
     for (int i = 0; i < HOUSES_COUNT; i++) {
         for (int j = 0; j < HOUSES_COMPONENTS; j++) {
+            // TODO: middle components not appearing
             Sprite component = houses[i].components[j];
             shadowOAM[component.oamIndex].attr0 = ATTR0_4BPP | ATTR0_SQUARE | ATTR0_Y(component.y);
             shadowOAM[component.oamIndex].attr1 = ATTR1_MEDIUM | ATTR1_X(component.x);
