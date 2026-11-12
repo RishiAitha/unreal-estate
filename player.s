@@ -123,7 +123,7 @@ updatePlayer:
 	cmp	r0, #0
 	beq	.L17
 	ldr	r0, [r4, #8]
-	mov	r3, #65536
+	mov	r3, #256
 	ldr	r2, .L45+12
 	mov	r1, r9
 	add	r0, r8, r0
@@ -174,7 +174,7 @@ updatePlayer:
 	ldr	r0, [r4, #8]
 	ldr	r2, .L45+12
 	mov	r1, r9
-	mov	r3, #65536
+	mov	r3, #256
 	ldr	ip, .L45+16
 	sub	r0, r6, r0
 	mov	lr, pc
@@ -188,7 +188,7 @@ updatePlayer:
 	b	.L12
 .L5:
 	ldr	r1, [r4, #12]
-	mov	r3, #65536
+	mov	r3, #256
 	ldr	r2, .L45+12
 	mov	r0, r8
 	ldr	ip, .L45+16

@@ -1114,39 +1114,36 @@ void updatePlayer(void) {
     if ((~(buttons) & ((1<<6)))) {
         player.direction = UP;
         player.isAnimating = 1;
-        if ((player.y > 0)
-            && (colorAt(leftX, upY - player.yVel, collisionMap, 256) != 0)
-            && (colorAt(rightX, upY - player.yVel, collisionMap, 65536) != 0)) {
+        if (((player.y > 0)
+            && (colorAt(leftX, upY - player.yVel, collisionMap, 256))
+            && (colorAt(rightX, upY - player.yVel, collisionMap, 256)))) {
             player.y -= player.yVel;
         }
     }
     if ((~(buttons) & ((1<<7)))) {
         player.direction = DOWN;
         player.isAnimating = 1;
-
-
-
-        if ((player.y + player.height < 160)
-            && (colorAt(leftX, downY + player.yVel, collisionMap, 256) != 0)
-            && (colorAt(rightX, downY + player.yVel, collisionMap, 256) != 0)) {
+        if (((player.y + player.height < 160)
+            && (colorAt(leftX, downY + player.yVel, collisionMap, 256))
+            && (colorAt(rightX, downY + player.yVel, collisionMap, 256)))) {
             player.y += player.yVel;
         }
     }
     if ((~(buttons) & ((1<<5)))) {
         player.direction = LEFT;
         player.isAnimating = 1;
-        if ((player.x > 0)
-            && (colorAt(leftX - player.xVel, upY, collisionMap, 256) != 0)
-            && (colorAt(leftX - player.xVel, downY, collisionMap, 65536) != 0)) {
+        if (((player.x > 0)
+            && (colorAt(leftX - player.xVel, upY, collisionMap, 256))
+            && (colorAt(leftX - player.xVel, downY, collisionMap, 256)))) {
             player.x -= player.xVel;
         }
     }
     if ((~(buttons) & ((1<<4)))) {
         player.direction = RIGHT;
         player.isAnimating = 1;
-        if ((player.x + player.width < 240)
-            && (colorAt(rightX + player.xVel, upY, collisionMap, 256) != 0)
-            && (colorAt(rightX + player.xVel, downY, collisionMap, 65536) != 0)) {
+        if (((player.x + player.width < 240)
+            && (colorAt(rightX + player.xVel, upY, collisionMap, 256))
+            && (colorAt(rightX + player.xVel, downY, collisionMap, 256)))) {
             player.x += player.xVel;
         }
     }
