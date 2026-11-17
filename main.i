@@ -91,8 +91,14 @@ typedef struct {
   u8 oamIndex;
 } Sprite;
 
+typedef struct {
+  Sprite components[4];
+  int choices[4];
+} House;
+
 
 extern Sprite player;
+extern House houses[20];
 # 4 "main.c" 2
 # 1 "print.h" 1
 # 25 "print.h"

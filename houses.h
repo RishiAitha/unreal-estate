@@ -6,6 +6,9 @@
 #define HOUSES_COLUMNS 5
 #define HOUSES_COUNT 20
 #define HOUSES_COMPONENTS 4
+#define HOUSES_POSSIBILITIES 256
+
+extern int correctHouse;
 
 void initializeHouses(void);
 

@@ -4,11 +4,45 @@
 #include "print.h"
 #include <stdio.h>
 
+int correctHouse;
+
 void initializeHouses(void) {
     int oamIndex = HOUSES_STARTING_OAMINDEX;
     int startX = 12;
     int count = 0;
+
+    // Generate Unique House Configurations
+
+    // guys i am so smart
+    
+    /* map all possible size 4 choice arrays to some index
+    this is basically counting! our base is 4 and we are counting to 256
+    (3 * 64) + (3 * 16) + (3 * 4) + (3) = 255
+    so we pick 20 different random numbers from 0-255
+    then turn those into choices arrays of base 4 digits */
+
+    // I learned Floyd algorithm for this
+    // range = 255, size = 20
+    // not sure if the bitset is the smartest way to do this but its fun
+    int bitset[HOUSES_POSSIBILITIES / 32];
+    int houseChoices[HOUSES_COUNT];
+    
+    for (int i = HOUSES_POSSIBILITIES - HOUSES_COUNT; i < HOUSES_POSSIBILITIES; i++) {
+        int num = rand() % 255;
+        int setItem = num / 32;
+        int itemIndex = num % 32;
+        if ((bitset[setItem] & (1 << itemIndex) >> itemIndex)) {
+            houseChoices[i] = i;
+        } else {
+            houseChoices[i] = num;
+        }
+        bitset[setItem] |= (1 << itemIndex);
+    }
+
+    // Assign Sprite Values
     for (int i = 0; i < HOUSES_COUNT; i++) {
+        int currentChoice = houseChoices[i];
+        int divisor = HOUSES_POSSIBILITIES;
         for (int j = 0; j < HOUSES_COMPONENTS; j++) {
             Sprite component = houses[i].components[j];
             component.x = startX + (40 * (i % 5));
@@ -20,10 +54,15 @@ void initializeHouses(void) {
 
             houses[i].components[j] = component;
 
-            // TODO: handle duplication and correct option selection!
-            houses[i].choices[j] = rand() % 3;
+            divisor /= 4;
+            int componentChoice = currentChoice / divisor;
+            currentChoice -= (componentChoice * divisor);
+
+            houses[i].choices[j] = componentChoice;
         }
     }
+
+    correctHouse = rand() % 19;
 }
 
 void drawHouses(void) {
