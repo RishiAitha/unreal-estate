@@ -7,7 +7,7 @@
 int correctHouse;
 
 void initializeHouses(void) {
-    int oamIndex = HOUSES_STARTING_OAMINDEX;
+    int oamIndex = HOUSES_STARTING_OAMINDEX + (HOUSES_COUNT * HOUSES_COMPONENTS);
     int startX = 12;
     int count = 0;
 
@@ -27,16 +27,22 @@ void initializeHouses(void) {
     int bitset[HOUSES_POSSIBILITIES / 32];
     int houseChoices[HOUSES_COUNT];
     
+    int houseIndex = 0;
     for (int i = HOUSES_POSSIBILITIES - HOUSES_COUNT; i < HOUSES_POSSIBILITIES; i++) {
         int num = rand() % 255;
         int setItem = num / 32;
         int itemIndex = num % 32;
         if ((bitset[setItem] & (1 << itemIndex) >> itemIndex)) {
-            houseChoices[i] = i;
+            houseChoices[houseIndex] = i;
         } else {
-            houseChoices[i] = num;
+            houseChoices[houseIndex] = num;
         }
         bitset[setItem] |= (1 << itemIndex);
+        houseIndex++;
+    }
+
+    for (int i = 0; i < HOUSES_COUNT; i++) {
+        mgba_printf_int(houseChoices[i]);
     }
 
     // Assign Sprite Values
@@ -49,7 +55,7 @@ void initializeHouses(void) {
             component.y = (40 * (i / 5));
             component.width = 32;
             component.height = 32;
-            component.oamIndex = oamIndex + count;
+            component.oamIndex = oamIndex - count;
             count++;
 
             houses[i].components[j] = component;
@@ -72,7 +78,7 @@ void drawHouses(void) {
             Sprite component = houses[i].components[j];
             shadowOAM[component.oamIndex].attr0 = ATTR0_4BPP | ATTR0_SQUARE | ATTR0_Y(component.y);
             shadowOAM[component.oamIndex].attr1 = ATTR1_MEDIUM | ATTR1_X(component.x);
-            shadowOAM[component.oamIndex].attr2 = ATTR2_TILEID(houses[i].choices[j] * 4, (j * 4) + 6) | ATTR2_PALROW(1) | ATTR2_PRIORITY(component.oamIndex - 1);
+            shadowOAM[component.oamIndex].attr2 = ATTR2_TILEID(houses[i].choices[j] * 4, (j * 4) + 6) | ATTR2_PALROW(0);
         }
     }
 }

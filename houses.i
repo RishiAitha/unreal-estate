@@ -868,9 +868,11 @@ extern long double strtold (const char *restrict, char **restrict);
 
 # 2 "houses.c" 2
 # 1 "houses.h" 1
-# 10 "houses.h"
+# 11 "houses.h"
 
-# 10 "houses.h"
+# 11 "houses.h"
+extern int correctHouse;
+
 void initializeHouses(void);
 
 void drawHouses(void);
@@ -973,6 +975,7 @@ void mgba_printf_level(int level, const char* ptr, ...);
 void mgba_printf(const char* string, ...);
 void mgba_break(void);
 void mgba_close(void);
+void mgba_printf_int(int);
 # 5 "houses.c" 2
 # 1 "/opt/devkitpro/devkitARM/arm-none-eabi/include/stdio.h" 1 3
 # 36 "/opt/devkitpro/devkitARM/arm-none-eabi/include/stdio.h" 3
@@ -1262,26 +1265,58 @@ _putchar_unlocked(int _c)
 
 
 # 7 "houses.c"
+int correctHouse;
+
 void initializeHouses(void) {
-    int oamIndex = 2;
+    int oamIndex = 2 + (20 * 4);
     int startX = 12;
     int count = 0;
+# 27 "houses.c"
+    int bitset[256 / 32];
+    int houseChoices[20];
+
+    int houseIndex = 0;
+    for (int i = 256 - 20; i < 256; i++) {
+        int num = rand() % 255;
+        int setItem = num / 32;
+        int itemIndex = num % 32;
+        if ((bitset[setItem] & (1 << itemIndex) >> itemIndex)) {
+            houseChoices[houseIndex] = i;
+        } else {
+            houseChoices[houseIndex] = num;
+        }
+        bitset[setItem] |= (1 << itemIndex);
+        houseIndex++;
+    }
+
     for (int i = 0; i < 20; i++) {
+        mgba_printf_int(houseChoices[i]);
+    }
+
+
+    for (int i = 0; i < 20; i++) {
+        int currentChoice = houseChoices[i];
+        int divisor = 256;
         for (int j = 0; j < 4; j++) {
             Sprite component = houses[i].components[j];
             component.x = startX + (40 * (i % 5));
             component.y = (40 * (i / 5));
             component.width = 32;
             component.height = 32;
-            component.oamIndex = oamIndex + count;
+            component.oamIndex = oamIndex - count;
             count++;
 
             houses[i].components[j] = component;
 
+            divisor /= 4;
+            int componentChoice = currentChoice / divisor;
+            currentChoice -= (componentChoice * divisor);
 
-            houses[i].choices[j] = rand() % 3;
+            houses[i].choices[j] = componentChoice;
         }
     }
+
+    correctHouse = rand() % 19;
 }
 
 void drawHouses(void) {
@@ -1291,7 +1326,7 @@ void drawHouses(void) {
             Sprite component = houses[i].components[j];
             shadowOAM[component.oamIndex].attr0 = (0<<13) | (0<<14) | ((component.y) & 0xFF);
             shadowOAM[component.oamIndex].attr1 = (2<<14) | ((component.x) & 0x1FF);
-            shadowOAM[component.oamIndex].attr2 = (((((j * 4) + 6) * (32) + (houses[i].choices[j] * 4))) & 0x3FF) | (((1) & 0xF) <<12) | (((component.oamIndex - 1) & 3) << 10);
+            shadowOAM[component.oamIndex].attr2 = (((((j * 4) + 6) * (32) + (houses[i].choices[j] * 4))) & 0x3FF) | (((0) & 0xF) <<12);
         }
     }
 }
