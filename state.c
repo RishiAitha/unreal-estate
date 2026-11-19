@@ -125,7 +125,7 @@ void doGame(void) {
     updatePlayer();
 
     if (BUTTON_PRESSED(BUTTON_A)) {
-        if (colorAt(player.x + (player.width / 2), player.y, (u8*) gameCollisionMapBitmap, 256) == 2) {
+        if (colorAt(player.x + (player.width / 2), player.y, (u8*) gameCollisionMapBitmap, COLLISION_MAP_WIDTH) == 2) {
             chooseCorrectHouse();
         }
     }

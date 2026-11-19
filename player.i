@@ -109,7 +109,7 @@ extern Sprite player;
 extern House houses[20];
 # 4 "player.c" 2
 # 1 "gameCollisionMap.h" 1
-# 23 "gameCollisionMap.h"
+# 21 "gameCollisionMap.h"
 extern const unsigned short gameCollisionMapBitmap[32768];
 
 
@@ -325,6 +325,7 @@ void mgba_printf_level(int level, const char* ptr, ...);
 void mgba_printf(const char* string, ...);
 void mgba_break(void);
 void mgba_close(void);
+void mgba_printf_int(int);
 # 7 "player.c" 2
 # 1 "/opt/devkitpro/devkitARM/arm-none-eabi/include/stdio.h" 1 3
 # 29 "/opt/devkitpro/devkitARM/arm-none-eabi/include/stdio.h" 3
@@ -1115,6 +1116,8 @@ void updatePlayer(void) {
     int rightX = player.x + player.width - 2 - 1;
     int upY = player.y + 2;
     int downY = player.y + player.height - 2 - 1;
+    int centerX = player.x + (player.width / 2);
+    int centerY = player.y + (player.height / 2);
     u8 *collisionMap = (u8*) gameCollisionMapBitmap;
 
     if ((~(buttons) & ((1<<6)))) {
@@ -1122,7 +1125,8 @@ void updatePlayer(void) {
         player.isAnimating = 1;
         if (((player.y > 0)
             && (colorAt(leftX, upY - player.yVel, collisionMap, 256))
-            && (colorAt(rightX, upY - player.yVel, collisionMap, 256)))) {
+            && (colorAt(rightX, upY - player.yVel, collisionMap, 256))
+            && (colorAt(centerX, upY - player.yVel, collisionMap, 256)))) {
             player.y -= player.yVel;
         }
     }
@@ -1131,7 +1135,8 @@ void updatePlayer(void) {
         player.isAnimating = 1;
         if (((player.y + player.height < 160)
             && (colorAt(leftX, downY + player.yVel, collisionMap, 256))
-            && (colorAt(rightX, downY + player.yVel, collisionMap, 256)))) {
+            && (colorAt(rightX, downY + player.yVel, collisionMap, 256))
+            && (colorAt(centerX, downY + player.yVel, collisionMap, 256)))) {
             player.y += player.yVel;
         }
     }
@@ -1140,7 +1145,8 @@ void updatePlayer(void) {
         player.isAnimating = 1;
         if (((player.x > 0)
             && (colorAt(leftX - player.xVel, upY, collisionMap, 256))
-            && (colorAt(leftX - player.xVel, downY, collisionMap, 256)))) {
+            && (colorAt(leftX - player.xVel, downY, collisionMap, 256))
+            && (colorAt(leftX - player.xVel, centerY, collisionMap, 256)))) {
             player.x -= player.xVel;
         }
     }
@@ -1149,7 +1155,8 @@ void updatePlayer(void) {
         player.isAnimating = 1;
         if (((player.x + player.width < 240)
             && (colorAt(rightX + player.xVel, upY, collisionMap, 256))
-            && (colorAt(rightX + player.xVel, downY, collisionMap, 256)))) {
+            && (colorAt(rightX + player.xVel, downY, collisionMap, 256))
+            && (colorAt(rightX + player.xVel, centerY, collisionMap, 256)))) {
             player.x += player.xVel;
         }
     }

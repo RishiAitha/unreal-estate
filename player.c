@@ -14,14 +14,17 @@ void updatePlayer(void) {
     int rightX = player.x + player.width - PLAYER_RMARGIN - 1;
     int upY = player.y + PLAYER_UMARGIN;
     int downY = player.y + player.height - PLAYER_DMARGIN - 1;
+    int centerX = player.x + (player.width / 2);
+    int centerY = player.y + (player.height / 2);
     u8 *collisionMap = (u8*) gameCollisionMapBitmap;
 
     if (BUTTON_HELD(BUTTON_UP)) {
         player.direction = UP;
         player.isAnimating = 1;
         if (((player.y > 0)
-            && (colorAt(leftX, upY - player.yVel, collisionMap, gameCollisionMapWidth))
-            && (colorAt(rightX, upY - player.yVel, collisionMap, gameCollisionMapWidth)))) {
+            && (colorAt(leftX, upY - player.yVel, collisionMap, COLLISION_MAP_WIDTH))
+            && (colorAt(rightX, upY - player.yVel, collisionMap, COLLISION_MAP_WIDTH))
+            && (colorAt(centerX, upY - player.yVel, collisionMap, COLLISION_MAP_WIDTH)))) {
             player.y -= player.yVel;
         }
     }
@@ -29,8 +32,9 @@ void updatePlayer(void) {
         player.direction = DOWN;
         player.isAnimating = 1;
         if (((player.y + player.height < SCREENHEIGHT)
-            && (colorAt(leftX, downY + player.yVel, collisionMap, gameCollisionMapWidth)) 
-            && (colorAt(rightX, downY + player.yVel, collisionMap, gameCollisionMapWidth)))) {
+            && (colorAt(leftX, downY + player.yVel, collisionMap, COLLISION_MAP_WIDTH)) 
+            && (colorAt(rightX, downY + player.yVel, collisionMap, COLLISION_MAP_WIDTH))
+            && (colorAt(centerX, downY + player.yVel, collisionMap, COLLISION_MAP_WIDTH)))) {
             player.y += player.yVel;
         }
     }
@@ -38,8 +42,9 @@ void updatePlayer(void) {
         player.direction = LEFT;
         player.isAnimating = 1;
         if (((player.x > 0)
-            && (colorAt(leftX - player.xVel, upY, collisionMap, gameCollisionMapWidth))
-            && (colorAt(leftX - player.xVel, downY, collisionMap, gameCollisionMapWidth)))) {
+            && (colorAt(leftX - player.xVel, upY, collisionMap, COLLISION_MAP_WIDTH))
+            && (colorAt(leftX - player.xVel, downY, collisionMap, COLLISION_MAP_WIDTH))
+            && (colorAt(leftX - player.xVel, centerY, collisionMap, COLLISION_MAP_WIDTH)))) {
             player.x -= player.xVel;
         }
     }
@@ -47,8 +52,9 @@ void updatePlayer(void) {
         player.direction = RIGHT;
         player.isAnimating = 1;
         if (((player.x + player.width < SCREENWIDTH)
-            && (colorAt(rightX + player.xVel, upY, collisionMap, gameCollisionMapWidth))
-            && (colorAt(rightX + player.xVel, downY, collisionMap, gameCollisionMapWidth)))) {
+            && (colorAt(rightX + player.xVel, upY, collisionMap, COLLISION_MAP_WIDTH))
+            && (colorAt(rightX + player.xVel, downY, collisionMap, COLLISION_MAP_WIDTH))
+            && (colorAt(rightX + player.xVel, centerY, collisionMap, COLLISION_MAP_WIDTH)))) {
             player.x += player.xVel;
         }
     }

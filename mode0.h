@@ -49,4 +49,6 @@ typedef struct {
 // Collision Map Function
 u8 colorAt(int, int, void*, int);
 
+#define COLLISION_MAP_WIDTH 256
+
 #endif
