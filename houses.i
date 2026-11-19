@@ -1271,15 +1271,15 @@ _putchar_unlocked(int _c)
 int correctHouse;
 
 void initializeHouses(void) {
-    int oamIndex = 2 + (20 * 4);
+    int oamIndex = 2 + (16 * 4);
     int startX = 12;
     int count = 0;
 # 27 "houses.c"
     int bitset[256 / 32];
-    int houseChoices[20];
+    int houseChoices[16];
 
     int houseIndex = 0;
-    for (int i = 256 - 20; i < 256; i++) {
+    for (int i = 256 - 16; i < 256; i++) {
         int num = rand() % 255;
         int setItem = num / 32;
         int itemIndex = num % 32;
@@ -1293,13 +1293,13 @@ void initializeHouses(void) {
     }
 
 
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < 16; i++) {
         int currentChoice = houseChoices[i];
         int divisor = 256;
         for (int j = 0; j < 4; j++) {
             Sprite component = houses[i].components[j];
-            component.x = startX + (40 * (i % 5));
-            component.y = (40 * (i / 5));
+            component.x = startX + (40 * (i % 4));
+            component.y = (40 * (i / 4));
             component.width = 32;
             component.height = 32;
             component.oamIndex = oamIndex - count;
@@ -1319,7 +1319,7 @@ void initializeHouses(void) {
 }
 
 void drawHouses(void) {
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < 16; i++) {
         for (int j = 0; j < 4; j++) {
             Sprite component = houses[i].components[j];
             shadowOAM[component.oamIndex].attr0 = (0<<13) | (0<<14) | ((component.y) & 0xFF);

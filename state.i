@@ -398,8 +398,8 @@ extern const unsigned short collisionBGMap[1024];
 extern const unsigned short collisionBGPal[256];
 # 11 "state.c" 2
 # 1 "gameCollisionMap.h" 1
-# 23 "gameCollisionMap.h"
-extern const unsigned short gameCollisionMapBitmap[32768];
+# 21 "gameCollisionMap.h"
+extern const unsigned short gameCollisionMapBitmap[16384];
 
 
 extern const unsigned short gameCollisionMapPal[256];

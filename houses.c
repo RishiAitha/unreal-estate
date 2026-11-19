@@ -47,8 +47,8 @@ void initializeHouses(void) {
         int divisor = HOUSES_POSSIBILITIES;
         for (int j = 0; j < HOUSES_COMPONENTS; j++) {
             Sprite component = houses[i].components[j];
-            component.x = startX + (40 * (i % 5));
-            component.y = (40 * (i / 5));
+            component.x = startX + (40 * (i % HOUSES_COLUMNS));
+            component.y = (40 * (i / HOUSES_COLUMNS));
             component.width = 32;
             component.height = 32;
             component.oamIndex = oamIndex - count;
