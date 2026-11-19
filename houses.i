@@ -876,6 +876,9 @@ extern int correctHouse;
 void initializeHouses(void);
 
 void drawHouses(void);
+
+void chooseCorrectHouse(void);
+void drawCorrectHouse(void);
 # 3 "houses.c" 2
 # 1 "sprites.h" 1
 
@@ -1289,10 +1292,6 @@ void initializeHouses(void) {
         houseIndex++;
     }
 
-    for (int i = 0; i < 20; i++) {
-        mgba_printf_int(houseChoices[i]);
-    }
-
 
     for (int i = 0; i < 20; i++) {
         int currentChoice = houseChoices[i];
@@ -1316,17 +1315,29 @@ void initializeHouses(void) {
         }
     }
 
-    correctHouse = rand() % 19;
+    chooseCorrectHouse();
 }
 
 void drawHouses(void) {
     for (int i = 0; i < 20; i++) {
         for (int j = 0; j < 4; j++) {
-
             Sprite component = houses[i].components[j];
             shadowOAM[component.oamIndex].attr0 = (0<<13) | (0<<14) | ((component.y) & 0xFF);
             shadowOAM[component.oamIndex].attr1 = (2<<14) | ((component.x) & 0x1FF);
             shadowOAM[component.oamIndex].attr2 = (((((j * 4) + 6) * (32) + (houses[i].choices[j] * 4))) & 0x3FF) | (((0) & 0xF) <<12);
         }
+    }
+}
+
+void chooseCorrectHouse(void) {
+    correctHouse = rand() % 19;
+}
+
+void drawCorrectHouse(void) {
+    int startingOAMIndex = 83;
+    for (int i = 0; i < 4; i++) {
+        shadowOAM[startingOAMIndex + i].attr0 = (0<<13) | (0<<14) | ((32 + (i * 32)) & 0xFF);
+        shadowOAM[startingOAMIndex + i].attr1 = (2<<14) | ((208) & 0x1FF);
+        shadowOAM[startingOAMIndex + i].attr2 = (((((i * 4) + 6) * (32) + (houses[correctHouse].choices[i] * 4))) & 0x3FF) | (((0) & 0xF) <<12);
     }
 }

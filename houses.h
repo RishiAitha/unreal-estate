@@ -14,4 +14,7 @@ void initializeHouses(void);
 
 void drawHouses(void);
 
+void chooseCorrectHouse(void);
+void drawCorrectHouse(void);
+
 #endif

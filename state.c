@@ -126,14 +126,13 @@ void doGame(void) {
 
     if (BUTTON_PRESSED(BUTTON_A)) {
         if (colorAt(player.x + (player.width / 2), player.y, (u8*) gameCollisionMapBitmap, gameCollisionMapWidth) == 2) {
-            current_state.initialized = 0;
-            current_state = game_states[5];
-            return;
+            chooseCorrectHouse();
         }
     }
 
     drawPlayer();
     drawHouses();
+    drawCorrectHouse();
 
     waitForVBlank();
 

@@ -344,6 +344,7 @@ void mgba_printf_level(int level, const char* ptr, ...);
 void mgba_printf(const char* string, ...);
 void mgba_break(void);
 void mgba_close(void);
+void mgba_printf_int(int);
 # 5 "state.c" 2
 
 # 1 "startBG.h" 1
@@ -418,10 +419,15 @@ void updatePlayer(void);
 void drawPlayer(void);
 # 16 "state.c" 2
 # 1 "houses.h" 1
-# 10 "houses.h"
+# 11 "houses.h"
+extern int correctHouse;
+
 void initializeHouses(void);
 
 void drawHouses(void);
+
+void chooseCorrectHouse(void);
+void drawCorrectHouse(void);
 # 17 "state.c" 2
 
 
@@ -535,14 +541,13 @@ void doGame(void) {
 
     if ((!(~(oldButtons) & ((1<<0))) && (~(buttons) & ((1<<0))))) {
         if (colorAt(player.x + (player.width / 2), player.y, (u8*) gameCollisionMapBitmap, 256) == 2) {
-            current_state.initialized = 0;
-            current_state = game_states[5];
-            return;
+            chooseCorrectHouse();
         }
     }
 
     drawPlayer();
     drawHouses();
+    drawCorrectHouse();
 
     waitForVBlank();
 

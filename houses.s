@@ -22,15 +22,13 @@ initializeHouses:
 	@ args = 0, pretend = 0, frame = 184
 	@ frame_needed = 0, uses_anonymous_args = 0
 	push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
-	sub	sp, sp, #188
-	add	r3, sp, #100
-	mov	r7, r3
 	mov	r6, #236
 	mov	r4, #1
-	str	r3, [sp, #12]
-	ldr	r5, .L15
+	sub	sp, sp, #188
+	ldr	r5, .L13
+	add	r7, sp, #100
 .L3:
-	ldr	r3, .L15+4
+	ldr	r3, .L13+4
 	mov	lr, pc
 	bx	r3
 	smull	r3, r2, r5, r0
@@ -56,29 +54,20 @@ initializeHouses:
 	str	r1, [r2, #-160]
 	str	r3, [r7, #4]!
 	bne	.L3
-	ldr	r4, [sp, #12]
-	ldr	r6, .L15+8
-	add	r5, sp, #180
-.L4:
-	ldr	r0, [r4, #4]!
-	mov	lr, pc
-	bx	r6
-	cmp	r4, r5
-	bne	.L4
 	mov	r3, #78
 	mov	r10, #0
-	ldr	fp, .L15+12
-.L6:
-	ldr	r2, .L15+16
-	umull	r1, r2, r10, r2
-	ldr	r1, [sp, #12]
-	bic	r8, r2, #3
-	ldr	r0, [r1, #4]!
-	add	r8, r8, r2, lsr #2
+	ldr	fp, .L13+8
+	add	r2, sp, #100
+.L5:
+	ldr	r1, .L13+12
+	umull	r0, r1, r10, r1
+	bic	r8, r1, #3
+	ldr	r0, [r2, #4]!
+	add	r8, r8, r1, lsr #2
 	sub	r7, r10, r8
 	lsl	r8, r8, #3
 	mov	r6, fp
-	str	fp, [sp, #20]
+	str	fp, [sp, #16]
 	str	r8, [sp, #8]
 	add	r9, fp, #188
 	mov	r4, #256
@@ -88,11 +77,11 @@ initializeHouses:
 	lsl	r7, r7, #3
 	add	r7, r7, #12
 	add	r5, r3, #4
-	str	r1, [sp, #12]
 	str	r7, [sp, #4]
-	str	r10, [sp, #16]
+	str	r10, [sp, #12]
+	str	r2, [sp, #20]
 	and	r5, r5, #255
-.L5:
+.L4:
 	mov	ip, r6
 	ldmia	ip!, {r0, r1, r2, r3}
 	add	lr, sp, #56
@@ -123,7 +112,7 @@ initializeHouses:
 	stm	ip, {r0, r1, r2, r3}
 	mov	r0, fp
 	mov	r1, r4
-	ldr	r3, .L15+20
+	ldr	r3, .L13+16
 	mov	lr, pc
 	bx	r3
 	sub	r5, r5, #1
@@ -132,24 +121,25 @@ initializeHouses:
 	mov	fp, r1
 	str	r0, [r9, #4]!
 	add	r6, r6, #48
-	bne	.L5
-	add	r10, sp, #16
+	bne	.L4
+	add	r10, sp, #12
 	ldm	r10, {r10, fp}
 	add	r10, r10, #1
 	sub	r3, r8, #4
 	cmp	r10, #20
+	ldr	r2, [sp, #20]
 	add	fp, fp, #208
 	and	r3, r3, #255
-	bne	.L6
-	ldr	r3, .L15+4
+	bne	.L5
+	ldr	r3, .L13+4
 	mov	lr, pc
 	bx	r3
-	ldr	r2, .L15+24
+	ldr	r2, .L13+20
 	smull	r3, r2, r0, r2
 	asr	r3, r0, #31
 	rsb	r3, r3, r2, asr #3
 	add	r2, r3, r3, lsl #3
-	ldr	r1, .L15+28
+	ldr	r1, .L13+24
 	add	r3, r3, r2, lsl #1
 	sub	r0, r0, r3
 	str	r0, [r1]
@@ -157,12 +147,11 @@ initializeHouses:
 	@ sp needed
 	pop	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
 	bx	lr
-.L16:
+.L14:
 	.align	2
-.L15:
+.L13:
 	.word	-2139062143
 	.word	rand
-	.word	mgba_printf_int
 	.word	houses
 	.word	-858993459
 	.word	__aeabi_idivmod
@@ -179,16 +168,16 @@ drawHouses:
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 0, uses_anonymous_args = 0
 	push	{r4, r5, r6, r7, r8, r9, r10, lr}
-	ldr	r6, .L23
-	ldr	r4, .L23+4
-	ldr	r8, .L23+8
-	ldr	r7, .L23+12
+	ldr	r6, .L21
+	ldr	r4, .L21+4
+	ldr	r8, .L21+8
+	ldr	r7, .L21+12
 	add	r9, r6, #4160
-.L18:
+.L16:
 	mov	r1, r6
 	mov	ip, #48
 	add	lr, r6, #188
-.L19:
+.L17:
 	ldr	r3, [lr, #4]!
 	ldr	r2, [r1]
 	ldrb	r0, [r1, #44]	@ zero_extendqisi2
@@ -206,20 +195,93 @@ drawHouses:
 	strh	r2, [r10, #2]	@ movhi
 	strh	r3, [r10, #4]	@ movhi
 	add	r1, r1, #48
-	bne	.L19
+	bne	.L17
 	add	r6, r6, #208
 	cmp	r9, r6
-	bne	.L18
+	bne	.L16
 	pop	{r4, r5, r6, r7, r8, r9, r10, lr}
 	bx	lr
-.L24:
+.L22:
 	.align	2
-.L23:
+.L21:
 	.word	houses
 	.word	shadowOAM
 	.word	511
 	.word	-32768
 	.size	drawHouses, .-drawHouses
+	.align	2
+	.global	chooseCorrectHouse
+	.syntax unified
+	.arm
+	.type	chooseCorrectHouse, %function
+chooseCorrectHouse:
+	@ Function supports interworking.
+	@ args = 0, pretend = 0, frame = 0
+	@ frame_needed = 0, uses_anonymous_args = 0
+	ldr	r3, .L25
+	push	{r4, lr}
+	mov	lr, pc
+	bx	r3
+	ldr	r2, .L25+4
+	smull	r3, r2, r0, r2
+	asr	r3, r0, #31
+	rsb	r3, r3, r2, asr #3
+	add	r2, r3, r3, lsl #3
+	ldr	r1, .L25+8
+	add	r3, r3, r2, lsl #1
+	sub	r0, r0, r3
+	str	r0, [r1]
+	pop	{r4, lr}
+	bx	lr
+.L26:
+	.align	2
+.L25:
+	.word	rand
+	.word	1808407283
+	.word	.LANCHOR0
+	.size	chooseCorrectHouse, .-chooseCorrectHouse
+	.align	2
+	.global	drawCorrectHouse
+	.syntax unified
+	.arm
+	.type	drawCorrectHouse, %function
+drawCorrectHouse:
+	@ Function supports interworking.
+	@ args = 0, pretend = 0, frame = 0
+	@ frame_needed = 0, uses_anonymous_args = 0
+	mov	r1, #48
+	ldr	r3, .L31
+	ldr	r3, [r3]
+	ldr	r0, .L31+4
+	add	ip, r3, r3, lsl #1
+	str	lr, [sp, #-4]!
+	add	r3, r3, ip, lsl #2
+	ldr	r2, .L31+8
+	ldr	lr, .L31+12
+	add	r0, r0, r3, lsl #4
+.L28:
+	ldr	r3, [r0, #4]!
+	add	r3, r1, r3
+	sub	ip, r1, #16
+	lsl	r3, r3, #2
+	add	r1, r1, #32
+	and	r3, r3, #1020
+	cmp	r1, #176
+	strh	ip, [r2]	@ movhi
+	strh	lr, [r2, #2]	@ movhi
+	strh	r3, [r2, #4]	@ movhi
+	add	r2, r2, #8
+	bne	.L28
+	ldr	lr, [sp], #4
+	bx	lr
+.L32:
+	.align	2
+.L31:
+	.word	.LANCHOR0
+	.word	houses+188
+	.word	shadowOAM+664
+	.word	-32560
+	.size	drawCorrectHouse, .-drawCorrectHouse
 	.global	correctHouse
 	.bss
 	.align	2
