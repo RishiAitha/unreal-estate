@@ -995,7 +995,6 @@ void mgba_printf_level(int level, const char* ptr, ...);
 void mgba_printf(const char* string, ...);
 void mgba_break(void);
 void mgba_close(void);
-void mgba_printf_int(int);
 # 6 "houses.c" 2
 # 1 "/opt/devkitpro/devkitARM/arm-none-eabi/include/stdio.h" 1 3
 # 36 "/opt/devkitpro/devkitARM/arm-none-eabi/include/stdio.h" 3
@@ -1340,9 +1339,13 @@ void drawHouses(void) {
     for (int i = 0; i < 25; i++) {
         for (int j = 0; j < 4; j++) {
             Sprite component = houses[i].components[j];
-            shadowOAM[component.oamIndex].attr0 = (0<<13) | (0<<14) | ((component.y - vOff) & 0xFF);
-            shadowOAM[component.oamIndex].attr1 = (2<<14) | ((component.x - hOff) & 0x1FF);
-            shadowOAM[component.oamIndex].attr2 = (((((j * 4) + 6) * (32) + (houses[i].choices[j] * 4))) & 0x3FF) | (((0) & 0xF) <<12);
+            if (component.x - hOff > 170 || component.y - vOff > 160) {
+                shadowOAM[component.oamIndex].attr0 = (2<<8);
+            } else {
+                shadowOAM[component.oamIndex].attr0 = (0<<13) | (0<<14) | ((component.y - vOff) & 0xFF);
+                shadowOAM[component.oamIndex].attr1 = (2<<14) | ((component.x - hOff) & 0x1FF);
+                shadowOAM[component.oamIndex].attr2 = (((((j * 4) + 6) * (32) + (houses[i].choices[j] * 4))) & 0x3FF) | (((0) & 0xF) <<12);
+            }
         }
     }
 }

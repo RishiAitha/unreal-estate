@@ -347,7 +347,6 @@ void mgba_printf_level(int level, const char* ptr, ...);
 void mgba_printf(const char* string, ...);
 void mgba_break(void);
 void mgba_close(void);
-void mgba_printf_int(int);
 # 5 "state.c" 2
 
 # 1 "startBG.h" 1
@@ -407,6 +406,16 @@ extern const unsigned short gameCollisionMapBitmap[131072];
 
 extern const unsigned short gameCollisionMapPal[256];
 # 12 "state.c" 2
+# 1 "overlayBG.h" 1
+# 22 "overlayBG.h"
+extern const unsigned short overlayBGTiles[32];
+
+
+extern const unsigned short overlayBGMap[1024];
+
+
+extern const unsigned short overlayBGPal[256];
+# 13 "state.c" 2
 
 # 1 "spritesheet.h" 1
 # 21 "spritesheet.h"
@@ -414,13 +423,13 @@ extern const unsigned short spritesheetTiles[16384];
 
 
 extern const unsigned short spritesheetPal[256];
-# 14 "state.c" 2
+# 15 "state.c" 2
 
 # 1 "player.h" 1
 # 10 "player.h"
 void updatePlayer(void);
 void drawPlayer(void);
-# 16 "state.c" 2
+# 17 "state.c" 2
 # 1 "houses.h" 1
 # 11 "houses.h"
 extern int correctHouse;
@@ -431,7 +440,7 @@ void drawHouses(void);
 
 void chooseCorrectHouse(void);
 void drawCorrectHouse(void);
-# 17 "state.c" 2
+# 18 "state.c" 2
 
 
 
@@ -511,9 +520,10 @@ void doInstructions(void) {
 
 void initGame(void) {
     if (!fromPause) {
-        (*(volatile unsigned short*) 0x4000008) = ((2) << 2) | ((0) << 8) | (3 << 14);
-        (*(volatile unsigned short*) 0x04000010) = 0;
-        (*(volatile unsigned short*) 0x04000012) = 0;
+        (*(volatile unsigned short *)0x4000000) = ((0) & 7) | (1 << (8 + (0 % 4))) | (1 << (8 + (1 % 4))) | (1 << 12);
+        (*(volatile unsigned short*) 0x400000A) = ((2) << 2) | ((0) << 8) | (3 << 14);
+        (*(volatile unsigned short*) 0x04000014) = 0;
+        (*(volatile unsigned short*) 0x04000016) = 0;
 
 
 
@@ -522,6 +532,11 @@ void initGame(void) {
         DMANow(3, collisionBGPal, ((unsigned short *)0x5000000), 512 / 2);
         DMANow(3, collisionBGTiles, ((CB*) 0x6000000) + 2, 96 / 2);
         DMANow(3, collisionBGMap, ((SB*) 0x6000000), 8192 / 2);
+
+        (*(volatile unsigned short*) 0x4000008) = ((3) << 2) | ((4) << 8) | (0 << 14);
+
+        DMANow(3, overlayBGTiles, ((CB*) 0x6000000) + 3, 64 / 2);
+        DMANow(3, overlayBGMap, ((SB*) 0x6000000) + 4, 2048 / 2);
 
         player.x = 0;
         player.y = 0;
@@ -556,9 +571,9 @@ void doGame(void) {
         }
     }
 
-    (*(volatile unsigned short*) 0x4000008) = ((2) << 2) | ((0) << 8) | (3 << 14);
-    (*(volatile unsigned short*) 0x04000010) = hOff;
-    (*(volatile unsigned short*) 0x04000012) = vOff;
+    (*(volatile unsigned short*) 0x400000A) = ((2) << 2) | ((0) << 8) | (3 << 14);
+    (*(volatile unsigned short*) 0x04000014) = hOff;
+    (*(volatile unsigned short*) 0x04000016) = vOff;
 
     drawPlayer();
     drawHouses();

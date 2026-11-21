@@ -9,6 +9,7 @@
 #include "winBG.h"
 #include "collisionBG.h"
 #include "gameCollisionMap.h"
+#include "overlayBG.h"
 
 #include "spritesheet.h"
 
@@ -93,9 +94,10 @@ void doInstructions(void) {
 
 void initGame(void) {
     if (!fromPause) {
-        REG_BG0CNT = BG_CHARBLOCK(2) | BG_SCREENBLOCK(0) | BG_SIZE_LARGE;
-        REG_BG0HOFF = 0;
-        REG_BG0VOFF = 0;
+        REG_DISPCTL = MODE(0) | BG_ENABLE(0) | BG_ENABLE(1) | SPRITE_ENABLE;
+        REG_BG1CNT = BG_CHARBLOCK(2) | BG_SCREENBLOCK(0) | BG_SIZE_LARGE;
+        REG_BG1HOFF = 0;
+        REG_BG1VOFF = 0;
 
         // DMANow(3, gameBGPal, BG_PALETTE, gameBGPalLen / 2);
         // DMANow(3, gameBGTiles, CHARBLOCK + 2, gameBGTilesLen / 2);
@@ -104,6 +106,11 @@ void initGame(void) {
         DMANow(3, collisionBGPal, BG_PALETTE, collisionBGPalLen / 2);
         DMANow(3, collisionBGTiles, CHARBLOCK + 2, collisionBGTilesLen / 2);
         DMANow(3, collisionBGMap, SCREENBLOCK, collisionBGMapLen / 2);
+
+        REG_BG0CNT = BG_CHARBLOCK(3) | BG_SCREENBLOCK(4) | BG_SIZE_SMALL;
+
+        DMANow(3, overlayBGTiles, CHARBLOCK + 3, overlayBGTilesLen / 2);
+        DMANow(3, overlayBGMap, SCREENBLOCK + 4, overlayBGMapLen / 2);
 
         player.x = 0;
         player.y = 0;
@@ -138,9 +145,9 @@ void doGame(void) {
         }
     }
 
-    REG_BG0CNT = BG_CHARBLOCK(2) | BG_SCREENBLOCK(0) | BG_SIZE_LARGE;
-    REG_BG0HOFF = hOff;
-    REG_BG0VOFF = vOff;
+    REG_BG1CNT = BG_CHARBLOCK(2) | BG_SCREENBLOCK(0) | BG_SIZE_LARGE;
+    REG_BG1HOFF = hOff;
+    REG_BG1VOFF = vOff;
 
     drawPlayer();
     drawHouses();

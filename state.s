@@ -201,10 +201,10 @@ doGame:
 	ldrh	r0, [r0]
 	ldr	ip, .L32+24
 	ldrh	r1, [r1]
-	strh	ip, [r3, #8]	@ movhi
+	strh	ip, [r3, #10]	@ movhi
 	ldr	r2, .L32+28
-	strh	r0, [r3, #16]	@ movhi
-	strh	r1, [r3, #18]	@ movhi
+	strh	r0, [r3, #20]	@ movhi
+	strh	r1, [r3, #22]	@ movhi
 	mov	lr, pc
 	bx	r2
 	ldr	r3, .L32+32
@@ -545,27 +545,28 @@ initGame:
 	@ Function supports interworking.
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 0, uses_anonymous_args = 0
-	push	{r4, r5, r6, lr}
+	push	{r4, r5, r6, r7, r8, lr}
 	ldr	r4, .L93
 	ldr	r5, [r4, #48]
 	cmp	r5, #0
 	beq	.L92
-	pop	{r4, r5, r6, lr}
+	pop	{r4, r5, r6, r7, r8, lr}
 	bx	lr
 .L92:
-	mov	ip, #67108864
-	ldr	lr, .L93+4
-	strh	lr, [ip, #8]	@ movhi
-	strh	r5, [ip, #16]	@ movhi
-	strh	r5, [ip, #18]	@ movhi
-	ldr	ip, .L93+8
+	mov	lr, #4864
+	mov	r7, #67108864
+	ldr	ip, .L93+4
+	strh	lr, [r7]	@ movhi
+	ldr	r6, .L93+8
+	strh	ip, [r7, #10]	@ movhi
 	mov	r3, #256
+	strh	r5, [r7, #20]	@ movhi
 	mov	r2, #83886080
 	mov	r0, #3
 	ldr	r1, .L93+12
-	mov	r6, ip
+	strh	r5, [r7, #22]	@ movhi
 	mov	lr, pc
-	bx	ip
+	bx	r6
 	mov	r3, #48
 	mov	r0, #3
 	ldr	r2, .L93+16
@@ -578,13 +579,27 @@ initGame:
 	ldr	r1, .L93+24
 	mov	lr, pc
 	bx	r6
+	ldr	ip, .L93+28
+	mov	r3, #32
+	strh	ip, [r7, #8]	@ movhi
+	mov	r0, #3
+	ldr	r2, .L93+32
+	ldr	r1, .L93+36
+	mov	lr, pc
+	bx	r6
+	mov	r3, #1024
+	mov	r0, #3
+	ldr	r2, .L93+40
+	ldr	r1, .L93+44
+	mov	lr, pc
+	bx	r6
 	mov	r2, #16
 	mov	r3, #1
 	mov	r1, #10
 	mov	r0, #3
 	str	r2, [r4, #16]
 	str	r2, [r4, #20]
-	ldr	r2, .L93+28
+	ldr	r2, .L93+48
 	str	r0, [r4, #40]
 	str	r5, [r4]
 	str	r5, [r4, #4]
@@ -597,7 +612,7 @@ initGame:
 	strb	r3, [r4, #44]
 	mov	lr, pc
 	bx	r2
-	pop	{r4, r5, r6, lr}
+	pop	{r4, r5, r6, r7, r8, lr}
 	bx	lr
 .L94:
 	.align	2
@@ -609,6 +624,11 @@ initGame:
 	.word	100696064
 	.word	collisionBGTiles
 	.word	collisionBGMap
+	.word	1036
+	.word	100712448
+	.word	overlayBGTiles
+	.word	100671488
+	.word	overlayBGMap
 	.word	initializeHouses
 	.size	initGame, .-initGame
 	.align	2

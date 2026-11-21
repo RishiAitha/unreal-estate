@@ -73,9 +73,14 @@ void drawHouses(void) {
     for (int i = 0; i < HOUSES_COUNT; i++) {
         for (int j = 0; j < HOUSES_COMPONENTS; j++) {
             Sprite component = houses[i].components[j];
-            shadowOAM[component.oamIndex].attr0 = ATTR0_4BPP | ATTR0_SQUARE | ATTR0_Y(component.y - vOff);
-            shadowOAM[component.oamIndex].attr1 = ATTR1_MEDIUM | ATTR1_X(component.x - hOff);
-            shadowOAM[component.oamIndex].attr2 = ATTR2_TILEID(houses[i].choices[j] * 4, (j * 4) + 6) | ATTR2_PALROW(0);
+            // TODO: running into issue where houses reappear on bottom
+            if (component.x - hOff > 170) { // TODO: this is an awful solution and i should just hide stuff with big sprites blocking the sides
+                shadowOAM[component.oamIndex].attr0 = ATTR0_HIDE;
+            } else {
+                shadowOAM[component.oamIndex].attr0 = ATTR0_4BPP | ATTR0_SQUARE | ATTR0_Y(component.y - vOff);
+                shadowOAM[component.oamIndex].attr1 = ATTR1_MEDIUM | ATTR1_X(component.x - hOff);
+                shadowOAM[component.oamIndex].attr2 = ATTR2_TILEID(houses[i].choices[j] * 4, (j * 4) + 6) | ATTR2_PALROW(0);
+            }
         }
     }
 }

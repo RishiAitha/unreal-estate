@@ -165,59 +165,74 @@ initializeHouses:
 	.type	drawHouses, %function
 drawHouses:
 	@ Function supports interworking.
-	@ args = 0, pretend = 0, frame = 0
+	@ args = 0, pretend = 0, frame = 8
 	@ frame_needed = 0, uses_anonymous_args = 0
-	push	{r4, r5, r6, r7, r8, r9, r10, lr}
-	ldr	r2, .L21
-	ldr	r5, .L21+4
-	ldr	r3, .L21+8
-	add	r10, r5, #5184
-	ldrh	r9, [r2]
-	ldrh	r8, [r3]
-	ldr	lr, .L21+12
-	ldr	r7, .L21+16
-	ldr	r6, .L21+20
-	add	r10, r10, #16
+	push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+	mov	r7, #512
+	ldr	r4, .L24
+	ldr	r2, .L24+4
+	ldr	r3, .L24+8
+	add	fp, r4, #5184
+	ldr	r6, [r2]
+	ldr	r10, [r3]
+	ldr	r5, .L24+12
+	ldr	r9, .L24+16
+	sub	sp, sp, #12
+	add	fp, fp, #16
 .L16:
-	mov	r1, r5
-	mov	r0, #48
-	add	ip, r5, #188
-.L17:
-	ldr	r3, [r1]
-	ldrb	r2, [r1, #44]	@ zero_extendqisi2
-	sub	r3, r3, r8
-	and	r3, r3, r7
-	lsl	r4, r2, #3
-	orr	r3, r3, r6
-	add	r2, lr, r2, lsl #3
-	strh	r3, [r2, #2]	@ movhi
-	ldr	r3, [ip, #4]!
-	add	r3, r0, r3
-	lsl	r3, r3, #2
-	and	r3, r3, #1020
-	add	r1, r1, #48
-	strh	r3, [r2, #4]	@ movhi
-	ldr	r3, [r1, #-44]
-	add	r0, r0, #32
-	sub	r3, r3, r9
+	mov	r2, r4
+	mov	r1, #48
+	str	r4, [sp, #4]
+	add	lr, r4, #192
+.L20:
+	ldr	r8, [r2]
+	ldrb	r0, [r2, #44]	@ zero_extendqisi2
+	sub	r8, r8, r6
+	cmp	r8, #170
+	lsl	ip, r0, #3
+	bgt	.L17
+	ldr	r3, [r2, #4]
+	sub	r3, r3, r10
+	cmp	r3, #160
+	and	r8, r8, r9
+	bgt	.L17
+	mvn	r8, r8, lsl #17
+	mvn	r8, r8, lsr #17
+	add	ip, r5, r0, lsl #3
+	lsl	r4, r0, #3
+	ldr	r0, [lr]
+	add	r0, r1, r0
+	lsl	r0, r0, #2
 	and	r3, r3, #255
-	cmp	r0, #176
-	strh	r3, [lr, r4]	@ movhi
-	bne	.L17
-	add	r5, r5, #208
-	cmp	r10, r5
+	and	r0, r0, #1020
+	strh	r3, [r5, r4]	@ movhi
+	strh	r8, [ip, #2]	@ movhi
+	strh	r0, [ip, #4]	@ movhi
+.L19:
+	add	r1, r1, #32
+	cmp	r1, #176
+	add	r2, r2, #48
+	add	lr, lr, #4
+	bne	.L20
+	ldr	r4, [sp, #4]
+	add	r4, r4, #208
+	cmp	fp, r4
 	bne	.L16
-	pop	{r4, r5, r6, r7, r8, r9, r10, lr}
+	add	sp, sp, #12
+	@ sp needed
+	pop	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
 	bx	lr
-.L22:
+.L17:
+	strh	r7, [r5, ip]	@ movhi
+	b	.L19
+.L25:
 	.align	2
-.L21:
-	.word	vOff
+.L24:
 	.word	houses
 	.word	hOff
+	.word	vOff
 	.word	shadowOAM
 	.word	511
-	.word	-32768
 	.size	drawHouses, .-drawHouses
 	.align	2
 	.global	chooseCorrectHouse
@@ -228,24 +243,24 @@ chooseCorrectHouse:
 	@ Function supports interworking.
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 0, uses_anonymous_args = 0
-	ldr	r3, .L25
+	ldr	r3, .L28
 	push	{r4, lr}
 	mov	lr, pc
 	bx	r3
-	ldr	r2, .L25+4
+	ldr	r2, .L28+4
 	smull	r3, r2, r0, r2
 	asr	r3, r0, #31
 	rsb	r3, r3, r2, asr #3
 	add	r2, r3, r3, lsl #3
-	ldr	r1, .L25+8
+	ldr	r1, .L28+8
 	add	r3, r3, r2, lsl #1
 	sub	r0, r0, r3
 	str	r0, [r1]
 	pop	{r4, lr}
 	bx	lr
-.L26:
+.L29:
 	.align	2
-.L25:
+.L28:
 	.word	rand
 	.word	1808407283
 	.word	.LANCHOR0
@@ -260,16 +275,16 @@ drawCorrectHouse:
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 0, uses_anonymous_args = 0
 	mov	r1, #48
-	ldr	r3, .L31
+	ldr	r3, .L34
 	ldr	r3, [r3]
-	ldr	r0, .L31+4
+	ldr	r0, .L34+4
 	add	ip, r3, r3, lsl #1
 	str	lr, [sp, #-4]!
 	add	r3, r3, ip, lsl #2
-	ldr	r2, .L31+8
-	ldr	lr, .L31+12
+	ldr	r2, .L34+8
+	ldr	lr, .L34+12
 	add	r0, r0, r3, lsl #4
-.L28:
+.L31:
 	ldr	r3, [r0, #4]!
 	add	r3, r1, r3
 	sub	ip, r1, #16
@@ -281,12 +296,12 @@ drawCorrectHouse:
 	strh	lr, [r2, #2]	@ movhi
 	strh	r3, [r2, #4]	@ movhi
 	add	r2, r2, #8
-	bne	.L28
+	bne	.L31
 	ldr	lr, [sp], #4
 	bx	lr
-.L32:
+.L35:
 	.align	2
-.L31:
+.L34:
 	.word	.LANCHOR0
 	.word	houses+188
 	.word	shadowOAM+824
