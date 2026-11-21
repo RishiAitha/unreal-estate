@@ -37,6 +37,5 @@ void mgba_printf_level(int level, const char* ptr, ...);
 void mgba_printf(const char* string, ...);
 void mgba_break(void);
 void mgba_close(void);
-void mgba_printf_int(int);
 
 #endif

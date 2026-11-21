@@ -26,4 +26,16 @@ colorAt:
 	ldrb	r0, [r2, r0]	@ zero_extendqisi2
 	bx	lr
 	.size	colorAt, .-colorAt
+	.global	vOff
+	.global	hOff
+	.bss
+	.align	2
+	.type	vOff, %object
+	.size	vOff, 4
+vOff:
+	.space	4
+	.type	hOff, %object
+	.size	hOff, 4
+hOff:
+	.space	4
 	.ident	"GCC: (devkitARM) 15.2.0"

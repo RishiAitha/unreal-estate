@@ -971,6 +971,23 @@ typedef struct {
 extern Sprite player;
 extern House houses[20];
 # 4 "houses.c" 2
+# 1 "mode0.h" 1
+# 32 "mode0.h"
+typedef struct {
+ u16 tileimg[8192];
+} CB;
+
+
+
+typedef struct {
+ u16 tilemap[1024];
+} SB;
+# 50 "mode0.h"
+u8 colorAt(int, int, void*, int);
+
+extern int hOff;
+extern int vOff;
+# 5 "houses.c" 2
 # 1 "print.h" 1
 # 35 "print.h"
 uint8_t mgba_open(void);
@@ -979,7 +996,7 @@ void mgba_printf(const char* string, ...);
 void mgba_break(void);
 void mgba_close(void);
 void mgba_printf_int(int);
-# 5 "houses.c" 2
+# 6 "houses.c" 2
 # 1 "/opt/devkitpro/devkitARM/arm-none-eabi/include/stdio.h" 1 3
 # 36 "/opt/devkitpro/devkitARM/arm-none-eabi/include/stdio.h" 3
 # 1 "/opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/15.2.0/include/stddef.h" 1 3 4
@@ -1264,22 +1281,23 @@ _putchar_unlocked(int _c)
 }
 # 801 "/opt/devkitpro/devkitARM/arm-none-eabi/include/stdio.h" 3
 
-# 6 "houses.c" 2
+# 7 "houses.c" 2
 
 
-# 7 "houses.c"
+# 8 "houses.c"
 int correctHouse;
 
 void initializeHouses(void) {
-    int oamIndex = 2 + (16 * 4);
-    int startX = 12;
+    int oamIndex = 2 + (25 * 4);
+    int startX = 20;
+    int startY = 24;
     int count = 0;
-# 27 "houses.c"
+# 29 "houses.c"
     int bitset[256 / 32];
-    int houseChoices[16];
+    int houseChoices[25];
 
     int houseIndex = 0;
-    for (int i = 256 - 16; i < 256; i++) {
+    for (int i = 256 - 25; i < 256; i++) {
         int num = rand() % 255;
         int setItem = num / 32;
         int itemIndex = num % 32;
@@ -1293,13 +1311,13 @@ void initializeHouses(void) {
     }
 
 
-    for (int i = 0; i < 16; i++) {
+    for (int i = 0; i < 25; i++) {
         int currentChoice = houseChoices[i];
         int divisor = 256;
         for (int j = 0; j < 4; j++) {
             Sprite component = houses[i].components[j];
-            component.x = startX + (40 * (i % 4));
-            component.y = (40 * (i / 4));
+            component.x = startX + (48 * (i % 5));
+            component.y = startY + (48 * (i / 5));
             component.width = 32;
             component.height = 32;
             component.oamIndex = oamIndex - count;
@@ -1319,11 +1337,11 @@ void initializeHouses(void) {
 }
 
 void drawHouses(void) {
-    for (int i = 0; i < 16; i++) {
+    for (int i = 0; i < 25; i++) {
         for (int j = 0; j < 4; j++) {
             Sprite component = houses[i].components[j];
-            shadowOAM[component.oamIndex].attr0 = (0<<13) | (0<<14) | ((component.y) & 0xFF);
-            shadowOAM[component.oamIndex].attr1 = (2<<14) | ((component.x) & 0x1FF);
+            shadowOAM[component.oamIndex].attr0 = (0<<13) | (0<<14) | ((component.y - vOff) & 0xFF);
+            shadowOAM[component.oamIndex].attr1 = (2<<14) | ((component.x - hOff) & 0x1FF);
             shadowOAM[component.oamIndex].attr2 = (((((j * 4) + 6) * (32) + (houses[i].choices[j] * 4))) & 0x3FF) | (((0) & 0xF) <<12);
         }
     }
@@ -1334,7 +1352,7 @@ void chooseCorrectHouse(void) {
 }
 
 void drawCorrectHouse(void) {
-    int startingOAMIndex = 83;
+    int startingOAMIndex = 103;
     for (int i = 0; i < 4; i++) {
         shadowOAM[startingOAMIndex + i].attr0 = (0<<13) | (0<<14) | ((32 + (i * 32)) & 0xFF);
         shadowOAM[startingOAMIndex + i].attr1 = (2<<14) | ((208) & 0x1FF);

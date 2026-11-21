@@ -31,7 +31,7 @@ void updatePlayer(void) {
     if (BUTTON_HELD(BUTTON_DOWN)) {
         player.direction = DOWN;
         player.isAnimating = 1;
-        if (((player.y + player.height < SCREENHEIGHT)
+        if (((player.y + player.height - vOff < SCREENHEIGHT)
             && (colorAt(leftX, downY + player.yVel, collisionMap, COLLISION_MAP_WIDTH)) 
             && (colorAt(rightX, downY + player.yVel, collisionMap, COLLISION_MAP_WIDTH))
             && (colorAt(centerX, downY + player.yVel, collisionMap, COLLISION_MAP_WIDTH)))) {
@@ -51,11 +51,31 @@ void updatePlayer(void) {
     if (BUTTON_HELD(BUTTON_RIGHT)) {
         player.direction = RIGHT;
         player.isAnimating = 1;
-        if (((player.x + player.width < SCREENWIDTH)
+        if (((player.x + player.width - hOff < SCREENWIDTH)
             && (colorAt(rightX + player.xVel, upY, collisionMap, COLLISION_MAP_WIDTH))
             && (colorAt(rightX + player.xVel, downY, collisionMap, COLLISION_MAP_WIDTH))
             && (colorAt(rightX + player.xVel, centerY, collisionMap, COLLISION_MAP_WIDTH)))) {
             player.x += player.xVel;
+        }
+    }
+
+    if ((player.x - hOff) < SCREENWIDTH / 4) {
+        if (hOff > 0) {
+            hOff -= player.xVel;
+        }
+    } else if ((player.x - hOff) > (SCREENWIDTH * 3 / 4)) {
+        if (hOff < 512) {
+            hOff += player.xVel;
+        }
+    }
+
+    if ((player.y - vOff) < SCREENHEIGHT / 4) {
+        if (vOff > 0) {
+            vOff -= player.yVel;
+        }
+    } else if ((player.y - vOff) > (SCREENHEIGHT * 3 / 4)) {
+        if (vOff < 512) {
+            vOff += player.yVel;
         }
     }
 
@@ -71,7 +91,7 @@ void updatePlayer(void) {
 }
 
 void drawPlayer(void) {
-    shadowOAM[PLAYER_OAMINDEX].attr0 = ATTR0_4BPP | ATTR0_SQUARE | ATTR0_Y(player.y);
-    shadowOAM[PLAYER_OAMINDEX].attr1 = ATTR1_SMALL | ATTR1_X(player.x);
+    shadowOAM[PLAYER_OAMINDEX].attr0 = ATTR0_4BPP | ATTR0_SQUARE | ATTR0_Y(player.y - vOff);
+    shadowOAM[PLAYER_OAMINDEX].attr1 = ATTR1_SMALL | ATTR1_X(player.x - hOff);
     shadowOAM[PLAYER_OAMINDEX].attr2 = ATTR2_TILEID(player.direction * 2, player.currentFrame * 2) | ATTR2_PRIORITY(100);
 }

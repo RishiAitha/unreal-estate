@@ -29,11 +29,11 @@ main:
 	bx	r3
 	mov	r3, #67108864
 	mov	r1, #4352
-	mov	r2, #8
+	ldr	r2, .L5+4
 	strh	r1, [r3]	@ movhi
-	ldr	r4, .L5+4
-	ldr	r6, .L5+8
-	ldr	r5, .L5+12
+	ldr	r4, .L5+8
+	ldr	r6, .L5+12
+	ldr	r5, .L5+16
 	strh	r2, [r3, #8]	@ movhi
 .L2:
 	ldrh	r3, [r4, #2]
@@ -47,6 +47,7 @@ main:
 	.align	2
 .L5:
 	.word	mgba_open
+	.word	-16376
 	.word	.LANCHOR0
 	.word	driveStates
 	.word	67109120
@@ -67,7 +68,7 @@ initialize:
 	bx	r3
 	mov	r3, #67108864
 	mov	r1, #4352
-	mov	r2, #8
+	ldr	r2, .L9+4
 	strh	r1, [r3]	@ movhi
 	pop	{r4, lr}
 	strh	r2, [r3, #8]	@ movhi
@@ -76,6 +77,7 @@ initialize:
 	.align	2
 .L9:
 	.word	mgba_open
+	.word	-16376
 	.size	initialize, .-initialize
 	.global	shadowOAM
 	.global	oldButtons

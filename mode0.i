@@ -59,7 +59,13 @@ typedef struct {
 } SB;
 # 50 "mode0.h"
 u8 colorAt(int, int, void*, int);
+
+extern int hOff;
+extern int vOff;
 # 2 "mode0.c" 2
+
+int hOff;
+int vOff;
 
 u8 colorAt(int x, int y, void *map, int map_width) {
     return ((u8*) map)[((y) * (map_width) + (x))];

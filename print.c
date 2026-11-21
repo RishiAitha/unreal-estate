@@ -75,9 +75,3 @@ void mgba_break(void) {
 void mgba_close(void) {
 	*REG_DEBUG_ENABLE = 0;
 }
-
-void mgba_printf_int(int num) {
-	char str[32];
-	sprintf(str, "%d", num);
-	mgba_printf(str);
-}

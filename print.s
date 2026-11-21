@@ -153,38 +153,4 @@ mgba_close:
 .L17:
 	.word	83884031
 	.size	mgba_close, .-mgba_close
-	.section	.rodata.str1.4
-	.align	2
-.LC1:
-	.ascii	"%d\000"
-	.text
-	.align	2
-	.global	mgba_printf_int
-	.syntax unified
-	.arm
-	.type	mgba_printf_int, %function
-mgba_printf_int:
-	@ Function supports interworking.
-	@ args = 0, pretend = 0, frame = 32
-	@ frame_needed = 0, uses_anonymous_args = 0
-	str	lr, [sp, #-4]!
-	sub	sp, sp, #36
-	mov	r2, r0
-	ldr	r1, .L21
-	ldr	r3, .L21+4
-	mov	r0, sp
-	mov	lr, pc
-	bx	r3
-	mov	r0, sp
-	bl	mgba_printf
-	add	sp, sp, #36
-	@ sp needed
-	ldr	lr, [sp], #4
-	bx	lr
-.L22:
-	.align	2
-.L21:
-	.word	.LC1
-	.word	sprintf
-	.size	mgba_printf_int, .-mgba_printf_int
 	.ident	"GCC: (devkitARM) 15.2.0"

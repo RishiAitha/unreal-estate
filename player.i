@@ -64,6 +64,9 @@ typedef struct {
 } SB;
 # 50 "mode0.h"
 u8 colorAt(int, int, void*, int);
+
+extern int hOff;
+extern int vOff;
 # 3 "player.c" 2
 # 1 "sprites.h" 1
 # 10 "sprites.h"
@@ -110,7 +113,7 @@ extern House houses[20];
 # 4 "player.c" 2
 # 1 "gameCollisionMap.h" 1
 # 21 "gameCollisionMap.h"
-extern const unsigned short gameCollisionMapBitmap[32768];
+extern const unsigned short gameCollisionMapBitmap[131072];
 
 
 extern const unsigned short gameCollisionMapPal[256];
@@ -325,7 +328,6 @@ void mgba_printf_level(int level, const char* ptr, ...);
 void mgba_printf(const char* string, ...);
 void mgba_break(void);
 void mgba_close(void);
-void mgba_printf_int(int);
 # 7 "player.c" 2
 # 1 "/opt/devkitpro/devkitARM/arm-none-eabi/include/stdio.h" 1 3
 # 29 "/opt/devkitpro/devkitARM/arm-none-eabi/include/stdio.h" 3
@@ -1124,19 +1126,19 @@ void updatePlayer(void) {
         player.direction = UP;
         player.isAnimating = 1;
         if (((player.y > 0)
-            && (colorAt(leftX, upY - player.yVel, collisionMap, 256))
-            && (colorAt(rightX, upY - player.yVel, collisionMap, 256))
-            && (colorAt(centerX, upY - player.yVel, collisionMap, 256)))) {
+            && (colorAt(leftX, upY - player.yVel, collisionMap, 512))
+            && (colorAt(rightX, upY - player.yVel, collisionMap, 512))
+            && (colorAt(centerX, upY - player.yVel, collisionMap, 512)))) {
             player.y -= player.yVel;
         }
     }
     if ((~(buttons) & ((1<<7)))) {
         player.direction = DOWN;
         player.isAnimating = 1;
-        if (((player.y + player.height < 160)
-            && (colorAt(leftX, downY + player.yVel, collisionMap, 256))
-            && (colorAt(rightX, downY + player.yVel, collisionMap, 256))
-            && (colorAt(centerX, downY + player.yVel, collisionMap, 256)))) {
+        if (((player.y + player.height - vOff < 160)
+            && (colorAt(leftX, downY + player.yVel, collisionMap, 512))
+            && (colorAt(rightX, downY + player.yVel, collisionMap, 512))
+            && (colorAt(centerX, downY + player.yVel, collisionMap, 512)))) {
             player.y += player.yVel;
         }
     }
@@ -1144,20 +1146,40 @@ void updatePlayer(void) {
         player.direction = LEFT;
         player.isAnimating = 1;
         if (((player.x > 0)
-            && (colorAt(leftX - player.xVel, upY, collisionMap, 256))
-            && (colorAt(leftX - player.xVel, downY, collisionMap, 256))
-            && (colorAt(leftX - player.xVel, centerY, collisionMap, 256)))) {
+            && (colorAt(leftX - player.xVel, upY, collisionMap, 512))
+            && (colorAt(leftX - player.xVel, downY, collisionMap, 512))
+            && (colorAt(leftX - player.xVel, centerY, collisionMap, 512)))) {
             player.x -= player.xVel;
         }
     }
     if ((~(buttons) & ((1<<4)))) {
         player.direction = RIGHT;
         player.isAnimating = 1;
-        if (((player.x + player.width < 240)
-            && (colorAt(rightX + player.xVel, upY, collisionMap, 256))
-            && (colorAt(rightX + player.xVel, downY, collisionMap, 256))
-            && (colorAt(rightX + player.xVel, centerY, collisionMap, 256)))) {
+        if (((player.x + player.width - hOff < 240)
+            && (colorAt(rightX + player.xVel, upY, collisionMap, 512))
+            && (colorAt(rightX + player.xVel, downY, collisionMap, 512))
+            && (colorAt(rightX + player.xVel, centerY, collisionMap, 512)))) {
             player.x += player.xVel;
+        }
+    }
+
+    if ((player.x - hOff) < 240 / 4) {
+        if (hOff > 0) {
+            hOff -= player.xVel;
+        }
+    } else if ((player.x - hOff) > (240 * 3 / 4)) {
+        if (hOff < 512) {
+            hOff += player.xVel;
+        }
+    }
+
+    if ((player.y - vOff) < 160 / 4) {
+        if (vOff > 0) {
+            vOff -= player.yVel;
+        }
+    } else if ((player.y - vOff) > (160 * 3 / 4)) {
+        if (vOff < 512) {
+            vOff += player.yVel;
         }
     }
 
@@ -1173,7 +1195,7 @@ void updatePlayer(void) {
 }
 
 void drawPlayer(void) {
-    shadowOAM[1].attr0 = (0<<13) | (0<<14) | ((player.y) & 0xFF);
-    shadowOAM[1].attr1 = (1<<14) | ((player.x) & 0x1FF);
+    shadowOAM[1].attr0 = (0<<13) | (0<<14) | ((player.y - vOff) & 0xFF);
+    shadowOAM[1].attr1 = (1<<14) | ((player.x - hOff) & 0x1FF);
     shadowOAM[1].attr2 = ((((player.currentFrame * 2) * (32) + (player.direction * 2))) & 0x3FF) | (((100) & 3) << 10);
 }

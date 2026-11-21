@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "houses.h"
 #include "sprites.h"
+#include "mode0.h"
 #include "print.h"
 #include <stdio.h>
 
@@ -8,7 +9,8 @@ int correctHouse;
 
 void initializeHouses(void) {
     int oamIndex = HOUSES_STARTING_OAMINDEX + (HOUSES_COUNT * HOUSES_COMPONENTS);
-    int startX = 12;
+    int startX = 20;
+    int startY = 24;
     int count = 0;
 
     // Generate Unique House Configurations
@@ -47,8 +49,8 @@ void initializeHouses(void) {
         int divisor = HOUSES_POSSIBILITIES;
         for (int j = 0; j < HOUSES_COMPONENTS; j++) {
             Sprite component = houses[i].components[j];
-            component.x = startX + (40 * (i % HOUSES_COLUMNS));
-            component.y = (40 * (i / HOUSES_COLUMNS));
+            component.x = startX + (48 * (i % HOUSES_COLUMNS));
+            component.y = startY + (48 * (i / HOUSES_COLUMNS));
             component.width = 32;
             component.height = 32;
             component.oamIndex = oamIndex - count;
@@ -71,8 +73,8 @@ void drawHouses(void) {
     for (int i = 0; i < HOUSES_COUNT; i++) {
         for (int j = 0; j < HOUSES_COMPONENTS; j++) {
             Sprite component = houses[i].components[j];
-            shadowOAM[component.oamIndex].attr0 = ATTR0_4BPP | ATTR0_SQUARE | ATTR0_Y(component.y);
-            shadowOAM[component.oamIndex].attr1 = ATTR1_MEDIUM | ATTR1_X(component.x);
+            shadowOAM[component.oamIndex].attr0 = ATTR0_4BPP | ATTR0_SQUARE | ATTR0_Y(component.y - vOff);
+            shadowOAM[component.oamIndex].attr1 = ATTR1_MEDIUM | ATTR1_X(component.x - hOff);
             shadowOAM[component.oamIndex].attr2 = ATTR2_TILEID(houses[i].choices[j] * 4, (j * 4) + 6) | ATTR2_PALROW(0);
         }
     }
@@ -83,7 +85,7 @@ void chooseCorrectHouse(void) {
 }
 
 void drawCorrectHouse(void) {
-    int startingOAMIndex = 83;
+    int startingOAMIndex = 103;
     for (int i = 0; i < HOUSES_COMPONENTS; i++) {
         shadowOAM[startingOAMIndex + i].attr0 = ATTR0_4BPP | ATTR0_SQUARE | ATTR0_Y(32 + (i * 32));
         shadowOAM[startingOAMIndex + i].attr1 = ATTR1_MEDIUM | ATTR1_X(208);

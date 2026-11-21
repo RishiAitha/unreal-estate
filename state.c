@@ -45,6 +45,7 @@ void driveStates(void) {
 }
 
 void initStart(void) {
+    REG_BG0CNT = BG_CHARBLOCK(2) | BG_SCREENBLOCK(0) | BG_SIZE_SMALL;
     DMANow(3, startBGPal, BG_PALETTE, startBGPalLen / 2);
     DMANow(3, startBGTiles, CHARBLOCK + 2, startBGTilesLen / 2);
     DMANow(3, startBGMap, SCREENBLOCK, startBGMapLen / 2);
@@ -71,6 +72,7 @@ void doStart(void) {
 }
 
 void initInstructions(void) {
+    REG_BG0CNT = BG_CHARBLOCK(2) | BG_SCREENBLOCK(0) | BG_SIZE_SMALL;
     DMANow(3, instructionsBGPal, BG_PALETTE, instructionsBGPalLen / 2);
     DMANow(3, instructionsBGTiles, CHARBLOCK + 2, instructionsBGTilesLen / 2);
     DMANow(3, instructionsBGMap, SCREENBLOCK, instructionsBGMapLen / 2);
@@ -91,6 +93,10 @@ void doInstructions(void) {
 
 void initGame(void) {
     if (!fromPause) {
+        REG_BG0CNT = BG_CHARBLOCK(2) | BG_SCREENBLOCK(0) | BG_SIZE_LARGE;
+        REG_BG0HOFF = 0;
+        REG_BG0VOFF = 0;
+
         // DMANow(3, gameBGPal, BG_PALETTE, gameBGPalLen / 2);
         // DMANow(3, gameBGTiles, CHARBLOCK + 2, gameBGTilesLen / 2);
         // DMANow(3, gameBGMap, SCREENBLOCK, gameBGMapLen / 2);
@@ -125,10 +131,16 @@ void doGame(void) {
     updatePlayer();
 
     if (BUTTON_PRESSED(BUTTON_A)) {
-        if (colorAt(player.x + (player.width / 2), player.y, (u8*) gameCollisionMapBitmap, COLLISION_MAP_WIDTH) == 2) {
+        if ((colorAt(player.x + (player.width / 2), player.y + 1, (u8*) gameCollisionMapBitmap, COLLISION_MAP_WIDTH) == 2)
+            || (colorAt(player.x + (player.width) - 1, player.y + 1, (u8*) gameCollisionMapBitmap, COLLISION_MAP_WIDTH) == 2)
+            || (colorAt(player.x, player.y + 1, (u8*) gameCollisionMapBitmap, COLLISION_MAP_WIDTH) == 2)) {
             chooseCorrectHouse();
         }
     }
+
+    REG_BG0CNT = BG_CHARBLOCK(2) | BG_SCREENBLOCK(0) | BG_SIZE_LARGE;
+    REG_BG0HOFF = hOff;
+    REG_BG0VOFF = vOff;
 
     drawPlayer();
     drawHouses();
@@ -169,6 +181,7 @@ void doMenu(void) {
 }
 
 void initWin(void) {
+    REG_BG0CNT = BG_CHARBLOCK(2) | BG_SCREENBLOCK(0) | BG_SIZE_SMALL;
     hideSprites();
     DMANow(3, winBGPal, BG_PALETTE, winBGPalLen / 2);
     DMANow(3, winBGTiles, CHARBLOCK + 2, winBGTilesLen / 2);

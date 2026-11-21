@@ -309,6 +309,7 @@ void mgba_printf_level(int level, const char* ptr, ...);
 void mgba_printf(const char* string, ...);
 void mgba_break(void);
 void mgba_close(void);
+void mgba_printf_int(int);
 # 5 "main.c" 2
 # 1 "state.h" 1
 
@@ -377,5 +378,5 @@ void initialize(void) {
     mgba_open();
 
     (*(volatile unsigned short *)0x4000000) = ((0) & 7) | (1 << (8 + (0 % 4))) | (1 << 12);
-    (*(volatile unsigned short*) 0x4000008) = ((2) << 2) | ((0) << 8) | (0 << 14);
+    (*(volatile unsigned short*) 0x4000008) = ((2) << 2) | ((0) << 8) | (3 << 14);
 }
