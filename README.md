@@ -1,5 +1,19 @@
 # Unreal Estate
 ## Rishi Aitha
+
+### Milestone 2
+
+#### What I've Finished
+- I've finished randomization and added screen scrolling to make room for more houses
+- Randomization avoids duplicates and picks a random correct house
+- The player can find the correct house to bring up their score, and after increasing it enough, they win!
+- This means the theoretical game loop is functional.
+    - However, I have much to do in terms of improving the score system and adding a timer.
+    - There are also quite a few bugs in the house displaying and other things.
+- This thanksgiving break (which I have left a little early for family commitment) is weird circumstances for me and my internet access will be limited, so I want to submit what I have but will continue to work on the project offline. By the time I am back and doing my demo, I should have much more done!
+    - Not 100% sure how grading works for M2 but as far as I remember it's based on the demo so I will focus on being ready by then since I will likely have submission issues for Monday.
+    - I will try my best to submit whenever I can and continue making progress though!
+
 ### Milestone 1
 
 #### Controls
