@@ -2,6 +2,7 @@
 #define GBA_SPRITES_H
 
 #include "gba.h"
+#include "houses.h"
 
 // Sprite Palette
 #define SPRITE_PAL ((u16 *)0x5000200)
@@ -89,6 +90,6 @@ typedef struct {
 
 // Sprite Objects
 extern Sprite player;
-extern House houses[20];
+extern House houses[HOUSES_COUNT];
 
 #endif

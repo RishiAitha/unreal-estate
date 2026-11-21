@@ -35,7 +35,9 @@ int fromPause = 0;
 
 // Sprites
 Sprite player;
-House houses[20];
+House houses[HOUSES_COUNT];
+
+int score = 0;
 
 void driveStates(void) {
     if (!current_state.initialized && current_state.initState) {
@@ -46,10 +48,10 @@ void driveStates(void) {
 }
 
 void initStart(void) {
-    REG_BG0CNT = BG_CHARBLOCK(2) | BG_SCREENBLOCK(0) | BG_SIZE_SMALL;
     DMANow(3, startBGPal, BG_PALETTE, startBGPalLen / 2);
     DMANow(3, startBGTiles, CHARBLOCK + 2, startBGTilesLen / 2);
     DMANow(3, startBGMap, SCREENBLOCK, startBGMapLen / 2);
+    REG_BG0CNT = BG_CHARBLOCK(2) | BG_SCREENBLOCK(0) | BG_SIZE_SMALL;
     
     DMANow(3, spritesheetPal, SPRITE_PAL, spritesheetPalLen / 2);
     DMANow(3, spritesheetTiles, CHARBLOCK + 4, spritesheetTilesLen / 2);
@@ -73,10 +75,10 @@ void doStart(void) {
 }
 
 void initInstructions(void) {
-    REG_BG0CNT = BG_CHARBLOCK(2) | BG_SCREENBLOCK(0) | BG_SIZE_SMALL;
     DMANow(3, instructionsBGPal, BG_PALETTE, instructionsBGPalLen / 2);
     DMANow(3, instructionsBGTiles, CHARBLOCK + 2, instructionsBGTilesLen / 2);
     DMANow(3, instructionsBGMap, SCREENBLOCK, instructionsBGMapLen / 2);
+    REG_BG0CNT = BG_CHARBLOCK(2) | BG_SCREENBLOCK(0) | BG_SIZE_SMALL;
 }
 
 void doInstructions(void) {
@@ -94,11 +96,6 @@ void doInstructions(void) {
 
 void initGame(void) {
     if (!fromPause) {
-        REG_DISPCTL = MODE(0) | BG_ENABLE(0) | BG_ENABLE(1) | SPRITE_ENABLE;
-        REG_BG1CNT = BG_CHARBLOCK(2) | BG_SCREENBLOCK(0) | BG_SIZE_LARGE;
-        REG_BG1HOFF = 0;
-        REG_BG1VOFF = 0;
-
         // DMANow(3, gameBGPal, BG_PALETTE, gameBGPalLen / 2);
         // DMANow(3, gameBGTiles, CHARBLOCK + 2, gameBGTilesLen / 2);
         // DMANow(3, gameBGMap, SCREENBLOCK, gameBGMapLen / 2);
@@ -106,6 +103,11 @@ void initGame(void) {
         DMANow(3, collisionBGPal, BG_PALETTE, collisionBGPalLen / 2);
         DMANow(3, collisionBGTiles, CHARBLOCK + 2, collisionBGTilesLen / 2);
         DMANow(3, collisionBGMap, SCREENBLOCK, collisionBGMapLen / 2);
+
+        REG_DISPCTL = MODE(0) | BG_ENABLE(0) | BG_ENABLE(1) | SPRITE_ENABLE;
+        REG_BG1CNT = BG_CHARBLOCK(2) | BG_SCREENBLOCK(0) | BG_SIZE_LARGE;
+        REG_BG1HOFF = 0;
+        REG_BG1VOFF = 0;
 
         REG_BG0CNT = BG_CHARBLOCK(3) | BG_SCREENBLOCK(4) | BG_SIZE_SMALL;
 
@@ -141,11 +143,27 @@ void doGame(void) {
         if ((colorAt(player.x + (player.width / 2), player.y + 1, (u8*) gameCollisionMapBitmap, COLLISION_MAP_WIDTH) == 2)
             || (colorAt(player.x + (player.width) - 1, player.y + 1, (u8*) gameCollisionMapBitmap, COLLISION_MAP_WIDTH) == 2)
             || (colorAt(player.x, player.y + 1, (u8*) gameCollisionMapBitmap, COLLISION_MAP_WIDTH) == 2)) {
-            chooseCorrectHouse();
+            
+            int chosenHouse = (player.x / 48) + (((player.y + 8) / 48) * 5) - 5;
+            
+            if (chosenHouse == correctHouse) {
+                score++;
+                chooseCorrectHouse();
+
+                if (score > 1) {
+                    current_state.initialized = 0;
+                    current_state = game_states[5];
+                    hOff = 0;
+                    vOff = 0;
+                    REG_BG1HOFF = 0;
+                    REG_BG1VOFF = 0;
+                    hideSprites();
+                    return;
+                }
+            }
         }
     }
 
-    REG_BG1CNT = BG_CHARBLOCK(2) | BG_SCREENBLOCK(0) | BG_SIZE_LARGE;
     REG_BG1HOFF = hOff;
     REG_BG1VOFF = vOff;
 
@@ -188,11 +206,12 @@ void doMenu(void) {
 }
 
 void initWin(void) {
-    REG_BG0CNT = BG_CHARBLOCK(2) | BG_SCREENBLOCK(0) | BG_SIZE_SMALL;
-    hideSprites();
     DMANow(3, winBGPal, BG_PALETTE, winBGPalLen / 2);
     DMANow(3, winBGTiles, CHARBLOCK + 2, winBGTilesLen / 2);
     DMANow(3, winBGMap, SCREENBLOCK, winBGMapLen / 2);
+    hideSprites();
+
+    REG_BG0CNT = BG_CHARBLOCK(2) | BG_SCREENBLOCK(0) | BG_SIZE_SMALL;
 
     waitForVBlank();
 

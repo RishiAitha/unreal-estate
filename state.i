@@ -96,7 +96,26 @@ extern int hOff;
 extern int vOff;
 # 3 "state.c" 2
 # 1 "sprites.h" 1
-# 10 "sprites.h"
+
+
+
+
+# 1 "houses.h" 1
+# 11 "houses.h"
+extern int correctHouse;
+
+void initializeHouses(void);
+
+void drawHouses(void);
+
+void chooseCorrectHouse(void);
+void drawCorrectHouse(void);
+# 6 "sprites.h" 2
+
+
+
+
+
 typedef struct {
   u16 attr0;
   u16 attr1;
@@ -107,7 +126,7 @@ typedef struct {
 
 
 extern OBJ_ATTR shadowOAM[128];
-# 64 "sprites.h"
+# 65 "sprites.h"
 void hideSprites();
 
 
@@ -136,7 +155,7 @@ typedef struct {
 
 
 extern Sprite player;
-extern House houses[20];
+extern House houses[25];
 # 4 "state.c" 2
 # 1 "print.h" 1
 # 25 "print.h"
@@ -430,17 +449,7 @@ extern const unsigned short spritesheetPal[256];
 void updatePlayer(void);
 void drawPlayer(void);
 # 17 "state.c" 2
-# 1 "houses.h" 1
-# 11 "houses.h"
-extern int correctHouse;
 
-void initializeHouses(void);
-
-void drawHouses(void);
-
-void chooseCorrectHouse(void);
-void drawCorrectHouse(void);
-# 18 "state.c" 2
 
 
 
@@ -461,7 +470,9 @@ int fromPause = 0;
 
 
 Sprite player;
-House houses[20];
+House houses[25];
+
+int score = 0;
 
 void driveStates(void) {
     if (!current_state.initialized && current_state.initState) {
@@ -472,10 +483,10 @@ void driveStates(void) {
 }
 
 void initStart(void) {
-    (*(volatile unsigned short*) 0x4000008) = ((2) << 2) | ((0) << 8) | (0 << 14);
     DMANow(3, startBGPal, ((unsigned short *)0x5000000), 512 / 2);
     DMANow(3, startBGTiles, ((CB*) 0x6000000) + 2, 3040 / 2);
     DMANow(3, startBGMap, ((SB*) 0x6000000), 2048 / 2);
+    (*(volatile unsigned short*) 0x4000008) = ((2) << 2) | ((0) << 8) | (0 << 14);
 
     DMANow(3, spritesheetPal, ((u16 *)0x5000200), 512 / 2);
     DMANow(3, spritesheetTiles, ((CB*) 0x6000000) + 4, 32768 / 2);
@@ -499,10 +510,10 @@ void doStart(void) {
 }
 
 void initInstructions(void) {
-    (*(volatile unsigned short*) 0x4000008) = ((2) << 2) | ((0) << 8) | (0 << 14);
     DMANow(3, instructionsBGPal, ((unsigned short *)0x5000000), 512 / 2);
     DMANow(3, instructionsBGTiles, ((CB*) 0x6000000) + 2, 4256 / 2);
     DMANow(3, instructionsBGMap, ((SB*) 0x6000000), 2048 / 2);
+    (*(volatile unsigned short*) 0x4000008) = ((2) << 2) | ((0) << 8) | (0 << 14);
 }
 
 void doInstructions(void) {
@@ -520,11 +531,6 @@ void doInstructions(void) {
 
 void initGame(void) {
     if (!fromPause) {
-        (*(volatile unsigned short *)0x4000000) = ((0) & 7) | (1 << (8 + (0 % 4))) | (1 << (8 + (1 % 4))) | (1 << 12);
-        (*(volatile unsigned short*) 0x400000A) = ((2) << 2) | ((0) << 8) | (3 << 14);
-        (*(volatile unsigned short*) 0x04000014) = 0;
-        (*(volatile unsigned short*) 0x04000016) = 0;
-
 
 
 
@@ -532,6 +538,11 @@ void initGame(void) {
         DMANow(3, collisionBGPal, ((unsigned short *)0x5000000), 512 / 2);
         DMANow(3, collisionBGTiles, ((CB*) 0x6000000) + 2, 96 / 2);
         DMANow(3, collisionBGMap, ((SB*) 0x6000000), 8192 / 2);
+
+        (*(volatile unsigned short *)0x4000000) = ((0) & 7) | (1 << (8 + (0 % 4))) | (1 << (8 + (1 % 4))) | (1 << 12);
+        (*(volatile unsigned short*) 0x400000A) = ((2) << 2) | ((0) << 8) | (3 << 14);
+        (*(volatile unsigned short*) 0x04000014) = 0;
+        (*(volatile unsigned short*) 0x04000016) = 0;
 
         (*(volatile unsigned short*) 0x4000008) = ((3) << 2) | ((4) << 8) | (0 << 14);
 
@@ -567,11 +578,27 @@ void doGame(void) {
         if ((colorAt(player.x + (player.width / 2), player.y + 1, (u8*) gameCollisionMapBitmap, 512) == 2)
             || (colorAt(player.x + (player.width) - 1, player.y + 1, (u8*) gameCollisionMapBitmap, 512) == 2)
             || (colorAt(player.x, player.y + 1, (u8*) gameCollisionMapBitmap, 512) == 2)) {
-            chooseCorrectHouse();
+
+            int chosenHouse = (player.x / 48) + (((player.y + 8) / 48) * 5) - 5;
+
+            if (chosenHouse == correctHouse) {
+                score++;
+                chooseCorrectHouse();
+
+                if (score > 1) {
+                    current_state.initialized = 0;
+                    current_state = game_states[5];
+                    hOff = 0;
+                    vOff = 0;
+                    (*(volatile unsigned short*) 0x04000014) = 0;
+                    (*(volatile unsigned short*) 0x04000016) = 0;
+                    hideSprites();
+                    return;
+                }
+            }
         }
     }
 
-    (*(volatile unsigned short*) 0x400000A) = ((2) << 2) | ((0) << 8) | (3 << 14);
     (*(volatile unsigned short*) 0x04000014) = hOff;
     (*(volatile unsigned short*) 0x04000016) = vOff;
 
@@ -614,11 +641,12 @@ void doMenu(void) {
 }
 
 void initWin(void) {
-    (*(volatile unsigned short*) 0x4000008) = ((2) << 2) | ((0) << 8) | (0 << 14);
-    hideSprites();
     DMANow(3, winBGPal, ((unsigned short *)0x5000000), 512 / 2);
     DMANow(3, winBGTiles, ((CB*) 0x6000000) + 2, 544 / 2);
     DMANow(3, winBGMap, ((SB*) 0x6000000), 2048 / 2);
+    hideSprites();
+
+    (*(volatile unsigned short*) 0x4000008) = ((2) << 2) | ((0) << 8) | (0 << 14);
 
     waitForVBlank();
 

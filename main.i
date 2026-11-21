@@ -56,6 +56,9 @@ typedef struct {
 } SB;
 # 50 "mode0.h"
 u8 colorAt(int, int, void*, int);
+
+extern int hOff;
+extern int vOff;
 # 3 "main.c" 2
 # 1 "sprites.h" 1
 # 10 "sprites.h"
@@ -309,7 +312,6 @@ void mgba_printf_level(int level, const char* ptr, ...);
 void mgba_printf(const char* string, ...);
 void mgba_break(void);
 void mgba_close(void);
-void mgba_printf_int(int);
 # 5 "main.c" 2
 # 1 "state.h" 1
 

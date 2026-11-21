@@ -1339,7 +1339,8 @@ void drawHouses(void) {
     for (int i = 0; i < 25; i++) {
         for (int j = 0; j < 4; j++) {
             Sprite component = houses[i].components[j];
-            if (component.x - hOff > 170 || component.y - vOff > 160) {
+
+            if (component.x - hOff > 170) {
                 shadowOAM[component.oamIndex].attr0 = (2<<8);
             } else {
                 shadowOAM[component.oamIndex].attr0 = (0<<13) | (0<<14) | ((component.y - vOff) & 0xFF);
