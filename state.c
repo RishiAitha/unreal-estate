@@ -150,7 +150,7 @@ void doGame(void) {
                 score++;
                 chooseCorrectHouse();
 
-                if (score > 1) {
+                if (score > 10) {
                     current_state.initialized = 0;
                     current_state = game_states[5];
                     hOff = 0;
